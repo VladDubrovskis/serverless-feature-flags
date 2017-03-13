@@ -1,0 +1,23 @@
+{
+  "name": "serverless-feature-flags",
+  "version": "0.0.1",
+  "description": "Serverless feature flags API",
+  "main": "handler.js",
+  "dependencies": {
+    "aws-sdk": "^2.27.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladDubrovskis/serverless-feature-flags.git"
+  },
+  "author": "Vlad Dubrovskis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VladDubrovskis/serverless-feature-flags/issues"
+  },
+  "homepage": "https://github.com/VladDubrovskis/serverless-feature-flags#readme"
+}
