@@ -22,6 +22,7 @@ provider:
   runtime: nodejs4.3
   stage: dev
   region: eu-west-1
+  profile: serverless
   iamRoleStatements:
     - Effect: Allow
       Action:
