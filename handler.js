@@ -10,7 +10,7 @@ const response = {
 };
 
 module.exports.hello = (event, context, callback) => {
-  docClient.scan(params, function(err, data) {
+  docClient.scan(params, (err, data) => {
     if (err) {
       response.body = JSON.stringify(err);
       response.code = 500;

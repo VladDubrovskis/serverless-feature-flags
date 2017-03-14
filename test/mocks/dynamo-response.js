@@ -1,4 +1,4 @@
-{
+module.exports = {
   "Items": [
     {
       "featureName": "test2",
