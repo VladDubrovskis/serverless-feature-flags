@@ -7,7 +7,9 @@
     "aws-sdk": "^2.27.0"
   },
   "devDependencies": {
+    "aws-sdk-mock": "^1.6.1",
     "mocha": "^3.2.0",
+    "sinon": "^1.17.7"
   },
   "scripts": {
     "test": "env AWS_REGION=eu-west-1 mocha"
