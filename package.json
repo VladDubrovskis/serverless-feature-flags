@@ -12,7 +12,7 @@
     "sinon": "^1.17.7"
   },
   "scripts": {
-    "test": "env AWS_REGION=eu-west-1 mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
