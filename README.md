@@ -16,6 +16,7 @@ The idea for the initial basic schema will be following:
 ## Todo
  - [x] Set up DynamoDB in `serverless.yml` - that is where the data will be persisted
  - [x] GET endpoint that will return a list of enabled features as defined in schema
- - [ ] Write object transform array reducer for the object from DynamoDB to match the response schema
+ - [x] Write object transform array reducer for the object from DynamoDB to match the response schema
+ - [ ] Handler to use the response transform
  - [ ] Cloudfront - configure the cache time for a very long time
  - [ ] Add a clear cache trigger when the DynamoDB is update - feature is added/removed/updated
