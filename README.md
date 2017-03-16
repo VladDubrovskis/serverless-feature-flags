@@ -20,3 +20,5 @@ The idea for the initial basic schema will be following:
  - [ ] Handler to use the response transform
  - [ ] Cloudfront - configure the cache time for a very long time
  - [ ] Add a clear cache trigger when the DynamoDB is update - feature is added/removed/updated
+ - [ ] Think of authentication mechanism for adding/removing/deleting features - for initial working scenario document and possibly add some scripts to talk to DynamoDB via AWS-SDK
+ - [ ] Document and possibly try to automate attaching a domain name
