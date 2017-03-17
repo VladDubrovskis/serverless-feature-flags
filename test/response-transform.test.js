@@ -15,7 +15,7 @@ describe('Response transform', function() {
           }
         ];
 
-        const actual = responseTransform(payload);
+        const actual = responseTransform.transform(payload);
 
         const expected = {
             "test2": true,
