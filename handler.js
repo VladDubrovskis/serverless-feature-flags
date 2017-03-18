@@ -14,9 +14,9 @@ module.exports.hello = (event, context, callback) => {
   docClient.scan(params, (err, data) => {
     if (err) {
       response.body = JSON.stringify(err);
-      response.code = 500;
+      response.statusCode = 500;
     };
-    response.body = responseTransform.transform(data.Items);
+    response.body = JSON.stringify(responseTransform.transform(data.Items));
     callback(null, response);
   });
 };
