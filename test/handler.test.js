@@ -27,7 +27,7 @@ describe('Feature flags endpoint', function() {
     handler.hello(undefined, undefined, callback);
     assert.equal(callback.firstCall.args[1].statusCode, 200);
     assert.equal(responseTransformStub.callCount, 1);
-    assert.deepEqual(callback.firstCall.args[1].body, responseTransformResponse);
+    assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));
   });
 
   after(() => {
