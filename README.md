@@ -18,7 +18,12 @@ The idea for the initial basic schema will be following:
  - [x] GET endpoint that will return a list of enabled features as defined in schema
  - [x] Write object transform array reducer for the object from DynamoDB to match the response schema
  - [x] Handler to use the response transform
+ - [ ] Change the directory structure: add "api" folder with "get", "put", etc. handlers
+ - [ ] Add POST handler - to add flag to DynamoDB
+ - [ ] Add PUT handler - to update flag in DynamoDB
+ - [ ] Add DELETE hander - to delete flag from DynamoDB
+ - [ ] Add authentication mechanism for adding/removing/deleting features
  - [ ] Cloudfront - configure the cache time for a very long time
- - [ ] Add a clear cache trigger when the DynamoDB is update - feature is added/removed/updated
+ - [ ] Add a clear cache trigger when the DynamoDB records is added/removed/updated
  - [ ] Think of authentication mechanism for adding/removing/deleting features - for initial working scenario document and possibly add some scripts to talk to DynamoDB via AWS-SDK
  - [ ] Document and possibly try to automate attaching a domain name
