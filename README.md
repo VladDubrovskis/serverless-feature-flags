@@ -18,7 +18,7 @@ The idea for the initial basic schema will be following:
  - [x] GET endpoint that will return a list of enabled features as defined in schema
  - [x] Write object transform array reducer for the object from DynamoDB to match the response schema
  - [x] Handler to use the response transform
- - [ ] Change the directory structure: add "api" folder with "get", "put", etc. handlers
+ - [x] Change the directory structure: add "api" folder with "get", "put", etc. handlers
  - [ ] Add POST handler - to add flag to DynamoDB
  - [ ] Add PUT handler - to update flag in DynamoDB
  - [ ] Add DELETE hander - to delete flag from DynamoDB
