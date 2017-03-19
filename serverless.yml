@@ -61,8 +61,8 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  flagsApiGet:
+    handler: src/api/get.handler
     events:
       - http:
           path: /

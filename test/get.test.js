@@ -1,9 +1,9 @@
 const assert = require('assert');
-const handler = require('../handler.js');
+const get = require('../src/api/get.js');
 const dynamoResponse = require('./mocks/dynamo-response');
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
-const responseTransform = require('../response-transform');
+const responseTransform = require('../src/lib/response-transform');
 
 describe('Feature flags endpoint', function() {
   let responseTransformResponse;
@@ -24,7 +24,7 @@ describe('Feature flags endpoint', function() {
 
   it('should return 200 with data from DynamoDB', function() {
     const callback = sinon.stub();
-    handler.hello(undefined, undefined, callback);
+    get.handler(undefined, undefined, callback);
     assert.equal(callback.firstCall.args[1].statusCode, 200);
     assert.equal(responseTransformStub.callCount, 1);
     assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));

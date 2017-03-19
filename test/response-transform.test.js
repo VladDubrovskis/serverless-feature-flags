@@ -1,5 +1,5 @@
 const assert = require('assert');
-const responseTransform = require('../response-transform');
+const responseTransform = require('../src/lib/response-transform');
 
 describe('Response transform', function() {
 
