@@ -1,8 +1,8 @@
 'use strict';
 const aws = require('aws-sdk');
-const responseTransform = require('./response-transform');
+const responseTransform = require('../lib/response-transform');
 
-module.exports.hello = (event, context, callback) => {
+module.exports.handler = (event, context, callback) => {
   const params = {
     TableName : 'featureFlags',
   };
