@@ -65,7 +65,7 @@ functions:
     handler: src/api/get.handler
     events:
       - http:
-          path: /
+          path: /flags
           method: get
 
 #    The following are a few example events you can configure
