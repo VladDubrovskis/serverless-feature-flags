@@ -67,6 +67,12 @@ functions:
       - http:
           path: /flags
           method: get
+  flagsApiPost:
+    handler: src/api/post.handler
+    events:
+      - http:
+          path: /flags
+          method: post
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
