@@ -5,7 +5,7 @@ const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const responseTransform = require('../src/lib/response-transform');
 
-describe('Feature flags endpoint', function() {
+describe('Feature flags GET endpoint', function() {
   let responseTransformResponse;
   let responseTransformStub;
 
