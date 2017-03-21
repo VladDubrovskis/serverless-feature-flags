@@ -27,6 +27,7 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:Scan
+        - dynamodb:PutItem
       Resource:
         - "Fn::Join": ["", ["arn:aws:dynamodb:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":table/featureFlags"]]
 
