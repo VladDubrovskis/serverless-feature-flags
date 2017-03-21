@@ -19,7 +19,8 @@ The idea for the initial basic schema will be following:
  - [x] Write object transform array reducer for the object from DynamoDB to match the response schema
  - [x] Handler to use the response transform
  - [x] Change the directory structure: add "api" folder with "get", "put", etc. handlers
- - [ ] Add POST handler - to add flag to DynamoDB
+ - [x] Add POST handler - to add flag to DynamoDB
+ - [ ] POST handler - add check to see if a flag is already in the table, if so, throw error. Otherwise it would get overwritten
  - [ ] Add PUT handler - to update flag in DynamoDB
  - [ ] Add DELETE hander - to delete flag from DynamoDB
  - [ ] Add authentication mechanism for adding/removing/deleting features
