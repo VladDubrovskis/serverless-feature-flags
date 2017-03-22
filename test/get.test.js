@@ -10,9 +10,7 @@ describe('Feature flags GET endpoint', function() {
   let responseTransformStub;
 
   before(() => {
-    AWS.mock('DynamoDB.DocumentClient', 'scan', function(params, callback) {
-      callback(null, dynamoResponse);
-    });
+    AWS.mock('DynamoDB.DocumentClient', 'scan', dynamoResponse);
 
     responseTransformResponse = {
         "test2": true,
@@ -22,12 +20,14 @@ describe('Feature flags GET endpoint', function() {
     responseTransformStub = sinon.stub(responseTransform, 'transform').returns(responseTransformResponse);
   })
 
-  it('should return 200 with data from DynamoDB', function() {
+  it('should return 200 with data from DynamoDB', function(done) {
     const callback = sinon.stub();
-    get.handler(undefined, undefined, callback);
-    assert.equal(callback.firstCall.args[1].statusCode, 200);
-    assert.equal(responseTransformStub.callCount, 1);
-    assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));
+    get.handler(undefined, undefined, callback).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 200);
+      assert.equal(responseTransformStub.callCount, 1);
+      assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));
+      done();
+    });
   });
 
   after(() => {
