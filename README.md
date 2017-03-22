@@ -29,3 +29,6 @@ The idea for the initial basic schema will be following:
  - [ ] Add a clear cache trigger when the DynamoDB records is added/removed/updated
  - [ ] Think of authentication mechanism for adding/removing/deleting features - for initial working scenario document and possibly add some scripts to talk to DynamoDB via AWS-SDK
  - [ ] Document and possibly try to automate attaching a domain name
+
+## Long term ideas
+ - [ ] Explore how this can be integrated with MVT frameworks, and what it takes to build one
