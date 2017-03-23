@@ -7,9 +7,12 @@ module.exports.handler = (event, context, callback) => {
     try {
         payload = JSON.parse(event.body);
     } catch (e) {
-        callback(null, {
-            statusCode: 500,
-            body: "Invalid request"
+        return new Promise((resolve, reject) => {
+          callback(null, {
+              statusCode: 500,
+              body: "Invalid request"
+          });
+          reject("Invalid request");
         });
     }
 
