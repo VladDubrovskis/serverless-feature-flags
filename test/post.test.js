@@ -7,9 +7,7 @@ describe('Feature flags POST endpoint', () => {
 
     it('should return 200 when payload is correct', (done) => {
         const callback = sinon.stub();
-        AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
-            callback(null, true);
-        });
+        AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
 
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
@@ -27,9 +25,7 @@ describe('Feature flags POST endpoint', () => {
     it('should return 500 when there is no payload', (done) => {
         const callback = sinon.stub();
 
-        AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
-            callback(null, true);
-        });
+        AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
 
         const event = {
             noBody: JSON.stringify({"featureName": "test1", "state": false})
@@ -46,9 +42,7 @@ describe('Feature flags POST endpoint', () => {
 
     it('should return 500 when DynamoDB put method fails', (done) => {
         const callback = sinon.stub();
-        AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
-            callback('Error', false);
-        });
+        AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject());
 
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
