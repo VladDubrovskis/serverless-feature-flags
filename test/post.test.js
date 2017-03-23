@@ -3,11 +3,11 @@ const post = require('../src/api/post.js');
 const sinon = require('sinon');
 const AWS = require('aws-sdk-mock');
 
-describe('Feature flags POST endpoint', function() {
+describe('Feature flags POST endpoint', () => {
 
-    it('should return 200 when payload is correct', function(done) {
+    it('should return 200 when payload is correct', (done) => {
         const callback = sinon.stub();
-        AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+        AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
             callback(null, true);
         });
 
@@ -24,10 +24,10 @@ describe('Feature flags POST endpoint', function() {
         AWS.restore('DynamoDB.DocumentClient');
     });
 
-    it('should return 500 when there is no payload', function(done) {
+    it('should return 500 when there is no payload', (done) => {
         const callback = sinon.stub();
 
-        AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+        AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
             callback(null, true);
         });
 
@@ -44,9 +44,9 @@ describe('Feature flags POST endpoint', function() {
         AWS.restore('DynamoDB.DocumentClient');
     });
 
-    it('should return 500 when DynamoDB put method fails', function(done) {
+    it('should return 500 when DynamoDB put method fails', (done) => {
         const callback = sinon.stub();
-        AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+        AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
             callback('Error', false);
         });
 

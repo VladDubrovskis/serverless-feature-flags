@@ -5,7 +5,7 @@ const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const responseTransform = require('../src/lib/response-transform');
 
-describe('Feature flags GET endpoint', function() {
+describe('Feature flags GET endpoint', () => {
   let responseTransformResponse;
   let responseTransformStub;
 
@@ -20,7 +20,7 @@ describe('Feature flags GET endpoint', function() {
     responseTransformStub = sinon.stub(responseTransform, 'transform').returns(responseTransformResponse);
   })
 
-  it('should return 200 with data from DynamoDB', function(done) {
+  it('should return 200 with data from DynamoDB', (done) => {
     const callback = sinon.stub();
     get.handler(undefined, undefined, callback).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 200);
