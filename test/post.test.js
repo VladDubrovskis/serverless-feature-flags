@@ -35,7 +35,7 @@ describe('Feature flags POST endpoint', () => {
             noBody: JSON.stringify({"featureName": "test1", "state": false})
         };
 
-        post.handler(event, undefined, callback).then(() => {
+        post.handler(event, undefined, callback).catch(() => {
           assert.equal(callback.firstCall.args[1].statusCode, 500);
           assert.equal(callback.firstCall.args[1].body, 'Invalid request');
           done();
@@ -54,7 +54,7 @@ describe('Feature flags POST endpoint', () => {
             body: JSON.stringify({"featureName": "test1", "state": false})
         };
 
-        post.handler(event, undefined, callback).then(() => {
+        post.handler(event, undefined, callback).catch(() => {
           assert.equal(callback.firstCall.args[1].statusCode, 500);
           assert.equal(callback.firstCall.args[1].body, '"Error"');
           done();
