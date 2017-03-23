@@ -21,7 +21,8 @@ The idea for the initial basic schema will be following:
  - [x] Change the directory structure: add "api" folder with "get", "put", etc. handlers
  - [x] Add POST handler - to add flag to DynamoDB
  - [ ] POST handler - add check to see if a flag is already in the table, if so, throw error. Otherwise it would get overwritten
- - [ ] Make use of AWS-SDK [promises](https://aws.amazon.com/blogs/developer/support-for-promises-in-the-sdk/) rather than callbacks
+  - [ ] Make use of AWS-SDK [promises](https://aws.amazon.com/blogs/developer/support-for-promises-in-the-sdk/) rather than callbacks
+  - [ ] Fix failing unit test
  - [ ] Add PUT handler - to update flag in DynamoDB
  - [ ] Add DELETE hander - to delete flag from DynamoDB
  - [ ] Add authentication mechanism for adding/removing/deleting features
