@@ -24,9 +24,6 @@ describe('Feature flags POST endpoint', () => {
 
     it('should return 500 when there is no payload', (done) => {
         const callback = sinon.stub();
-
-        AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
-
         const event = {
             noBody: JSON.stringify({"featureName": "test1", "state": false})
         };
@@ -36,8 +33,6 @@ describe('Feature flags POST endpoint', () => {
           assert.equal(callback.firstCall.args[1].body, 'Invalid request');
           done();
         });
-
-        AWS.restore('DynamoDB.DocumentClient');
     });
 
     it('should return 500 when DynamoDB put method fails', (done) => {
