@@ -28,15 +28,22 @@ module.exports.handler = (event, context, callback) => {
 
     const docClient = new aws.DynamoDB.DocumentClient();
 
-    return docClient.put(params).promise().then(() => {
-        callback(null, {
-            statusCode: 200,
-            body: "OK"
-        });
-    }).catch((err) => {
-        callback(null, {
-            statusCode: 500,
-            body: JSON.stringify(err)
+    return new Promise((resolve, reject) => {
+      docClient.put(params).promise()
+        .then(() => {
+            callback(null, {
+                statusCode: 200,
+                body: "OK"
+            });
+            resolve();
+        })
+        .catch((err) => {
+            callback(null, {
+                statusCode: 500,
+                body: JSON.stringify(err)
+            });
+            reject(err);
         });
     });
+
 };
