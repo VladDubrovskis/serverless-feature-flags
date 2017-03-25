@@ -12,14 +12,20 @@ module.exports.handler = (event, context, callback) => {
     statusCode: 200
   };
 
-  return docClient.scan(params).promise()
-    .then((data) => {
-      response.body = JSON.stringify(responseTransform.transform(data.Items));
-      callback(null, response);
-    })
-    .catch((err) => {
-      response.body = JSON.stringify(err);
-      response.statusCode = 500;
-      callback(null, response);
-    });
+
+
+  return new Promise((resolve, reject) => {
+    docClient.scan(params).promise()
+      .then((data) => {
+        response.body = JSON.stringify(responseTransform.transform(data.Items));
+        callback(null, response);
+        resolve();
+      })
+      .catch((err) => {
+        response.body = JSON.stringify(err);
+        response.statusCode = 500;
+        callback(null, response);
+        reject(err)
+      });
+  });
 };
