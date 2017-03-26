@@ -20,7 +20,7 @@ The idea for the initial basic schema will be following:
  - [x] Handler to use the response transform
  - [x] Change the directory structure: add "api" folder with "get", "put", etc. handlers
  - [x] Add POST handler - to add flag to DynamoDB
- - [ ] POST handler - add check to see if a flag is already in the table, if so, throw error. Otherwise it would get overwritten
+ - [x] POST handler - add check to see if a flag is already in the table, if so, throw error. Otherwise it would get overwritten
   - [x] Make use of AWS-SDK [promises](https://aws.amazon.com/blogs/developer/support-for-promises-in-the-sdk/) rather than callbacks
   - [x] Fix failing unit test
  - [ ] Refactor the callbacks - repeated code all over the place
