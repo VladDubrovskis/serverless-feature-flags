@@ -27,6 +27,7 @@ The idea for the initial basic schema will be following:
  - [ ] Update the response HTTP error codes
  - [ ] Add PUT handler - to update flag in DynamoDB
  - [ ] Add DELETE hander - to delete flag from DynamoDB
+ - [ ] Add integration tests
  - [ ] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
  - [ ] Add authentication mechanism for adding/removing/deleting features
  - [ ] Cloudfront - configure the cache time for a very long time
