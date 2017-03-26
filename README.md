@@ -23,8 +23,11 @@ The idea for the initial basic schema will be following:
  - [ ] POST handler - add check to see if a flag is already in the table, if so, throw error. Otherwise it would get overwritten
   - [x] Make use of AWS-SDK [promises](https://aws.amazon.com/blogs/developer/support-for-promises-in-the-sdk/) rather than callbacks
   - [x] Fix failing unit test
+ - [ ] Refactor the callbacks - repeated code all over the place
+ - [ ] Update the response HTTP error codes
  - [ ] Add PUT handler - to update flag in DynamoDB
  - [ ] Add DELETE hander - to delete flag from DynamoDB
+ - [ ] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
  - [ ] Add authentication mechanism for adding/removing/deleting features
  - [ ] Cloudfront - configure the cache time for a very long time
  - [ ] Add a clear cache trigger when the DynamoDB records is added/removed/updated
