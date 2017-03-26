@@ -4,12 +4,12 @@ const responseTransform = require('../lib/response-transform');
 
 module.exports.handler = (event, context, callback) => {
   const params = {
-    TableName : 'featureFlags',
+    "TableName" : "featureFlags",
   };
 
   const docClient = new aws.DynamoDB.DocumentClient();
   const response = {
-    statusCode: 200
+    "statusCode": 200
   };
 
 

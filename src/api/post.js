@@ -12,8 +12,8 @@ module.exports.handler = (event, context, callback) => {
     } catch (e) {
         return new Promise((resolve, reject) => {
           callback(null, {
-              statusCode: 500,
-              body: "Invalid request"
+              "statusCode": 500,
+              "body": "Invalid request"
           });
           reject("Invalid request");
         });
@@ -25,12 +25,12 @@ module.exports.handler = (event, context, callback) => {
     };
 
     const newItemParams = {
-        "TableName": 'featureFlags',
+        "TableName": "featureFlags",
         "Item": newItem
     };
 
     const checkItemParams = {
-        "TableName": 'featureFlags',
+        "TableName": "featureFlags",
         "Key": {
           "featureName": payload.featureName,
         }
@@ -46,30 +46,30 @@ module.exports.handler = (event, context, callback) => {
             docClient.put(newItemParams).promise()
               .then(() => {
                   callback(null, {
-                      statusCode: 200,
-                      body: "OK"
+                      "statusCode": 200,
+                      "body": "OK"
                   });
                   resolve();
               })
               .catch((err) => {
                   callback(null, {
-                      statusCode: 500,
-                      body: JSON.stringify(err)
+                      "statusCode": 500,
+                      "body": JSON.stringify(err)
                   });
                   reject(err);
               });
           } else {
             callback(null, {
-                statusCode: 500,
-                body: JSON.stringify("Feature flag already exists")
+                "statusCode": 500,
+                "body": JSON.stringify("Feature flag already exists")
             });
             reject("Feature flag already exists")
           }
         })
         .catch((err) => {
           callback(null, {
-              statusCode: 500,
-              body: JSON.stringify(err)
+              "statusCode": 500,
+              "body": JSON.stringify(err)
           });
           reject(err)
         });
