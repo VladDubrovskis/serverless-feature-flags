@@ -1,6 +1,5 @@
 const assert = require('assert');
 const get = require('../src/api/get.js');
-const dynamoResponse = require('./mocks/dynamo-response');
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const responseTransform = require('../src/lib/response-transform');
@@ -10,7 +9,7 @@ describe('Feature flags GET endpoint', () => {
   let responseTransformStub;
 
   it('should return 200 with data from DynamoDB', (done) => {
-    AWS.mock('DynamoDB.DocumentClient', 'scan', dynamoResponse);
+    AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.resolve({}));
 
     responseTransformResponse = {
         "test2": true,
