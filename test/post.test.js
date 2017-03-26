@@ -8,6 +8,7 @@ describe('Feature flags POST endpoint', () => {
     it('should return 200 when payload is correct', (done) => {
         const callback = sinon.stub();
         AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
+        AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
 
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
@@ -39,6 +40,7 @@ describe('Feature flags POST endpoint', () => {
         const callback = sinon.stub();
         AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject('Put method error'));
 
+        AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
         };
@@ -51,4 +53,38 @@ describe('Feature flags POST endpoint', () => {
 
         AWS.restore('DynamoDB.DocumentClient');
     });
+
+    it('should return 500 when DynamoDB get method fails', (done) => {
+        const callback = sinon.stub();
+        AWS.mock('DynamoDB.DocumentClient', 'get', Promise.reject('Get method error'));
+        const event = {
+            body: JSON.stringify({"featureName": "test1", "state": false})
+        };
+
+        post.handler(event, undefined, callback).catch(() => {
+          assert.equal(callback.firstCall.args[1].statusCode, 500);
+          assert.equal(callback.firstCall.args[1].body, '"Get method error"');
+          done();
+        });
+
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+
+    it('should return 500 when DynamoDB get method find a feature flag entry', (done) => {
+        const callback = sinon.stub();
+        AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({ Item: { featureName: 'featureName', state: false } }));
+        const event = {
+            body: JSON.stringify({"featureName": "test1", "state": false})
+        };
+
+        post.handler(event, undefined, callback).catch(() => {
+          assert.equal(callback.firstCall.args[1].statusCode, 500);
+          assert.equal(callback.firstCall.args[1].body, '"Feature flag already exists"');
+          done();
+        });
+
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+
+
 });
