@@ -12,7 +12,7 @@ module.exports.handler = (event, context, callback) => {
     } catch (e) {
         return new Promise((resolve, reject) => {
           callback(null, {
-              "statusCode": 500,
+              "statusCode": 400,
               "body": "Invalid request"
           });
           reject("Invalid request");
@@ -46,7 +46,7 @@ module.exports.handler = (event, context, callback) => {
             docClient.put(newItemParams).promise()
               .then(() => {
                   callback(null, {
-                      "statusCode": 200,
+                      "statusCode": 201,
                       "body": "OK"
                   });
                   resolve();
@@ -60,7 +60,7 @@ module.exports.handler = (event, context, callback) => {
               });
           } else {
             callback(null, {
-                "statusCode": 500,
+                "statusCode": 409,
                 "body": JSON.stringify("Feature flag already exists")
             });
             reject("Feature flag already exists")
