@@ -8,7 +8,7 @@ describe('Feature flags POST endpoint', () => {
       AWS.restore();
     });
 
-    it('should return 200 when payload is correct', (done) => {
+    it('should return 201 when payload is correct', (done) => {
         const callback = sinon.stub();
         AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
         AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
@@ -18,20 +18,20 @@ describe('Feature flags POST endpoint', () => {
         };
 
         post.handler(event, undefined, callback).then(() => {
-          assert.equal(callback.firstCall.args[1].statusCode, 200);
+          assert.equal(callback.firstCall.args[1].statusCode, 201);
           assert.equal(callback.firstCall.args[1].body, 'OK');
           done();
         });
     });
 
-    it('should return 500 when there is no payload', (done) => {
+    it('should return 400 when there is no payload', (done) => {
         const callback = sinon.stub();
         const event = {
             noBody: JSON.stringify({"featureName": "test1", "state": false})
         };
 
         post.handler(event, undefined, callback).catch(() => {
-          assert.equal(callback.firstCall.args[1].statusCode, 500);
+          assert.equal(callback.firstCall.args[1].statusCode, 400);
           assert.equal(callback.firstCall.args[1].body, 'Invalid request');
           done();
         });
@@ -66,7 +66,7 @@ describe('Feature flags POST endpoint', () => {
         });
     });
 
-    it('should return 500 when DynamoDB get method find a feature flag entry', (done) => {
+    it('should return 409 when DynamoDB get method find a feature flag entry', (done) => {
         const callback = sinon.stub();
         AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({ Item: { featureName: 'featureName', state: false } }));
         const event = {
@@ -74,7 +74,7 @@ describe('Feature flags POST endpoint', () => {
         };
 
         post.handler(event, undefined, callback).catch(() => {
-          assert.equal(callback.firstCall.args[1].statusCode, 500);
+          assert.equal(callback.firstCall.args[1].statusCode, 409);
           assert.equal(callback.firstCall.args[1].body, '"Feature flag already exists"');
           done();
         });
