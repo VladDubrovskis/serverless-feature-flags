@@ -12,7 +12,7 @@ describe('Feature flags GET endpoint', () => {
     AWS.restore('DynamoDB.DocumentClient');
   });
 
-  it('should return 200 with data from DynamoDB', (done) => {
+  it('should return 200 with data from DynamoDB', () => {
     AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.resolve({}));
 
     responseTransformResponse = {
@@ -23,23 +23,21 @@ describe('Feature flags GET endpoint', () => {
     responseTransformStub = sinon.stub(responseTransform, 'transform').returns(responseTransformResponse);
 
     const callback = sinon.stub();
-    get.handler(undefined, undefined, callback).then(() => {
+    return get.handler(undefined, undefined, callback).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 200);
       assert.equal(responseTransformStub.callCount, 1);
       assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));
-      done();
     });
 
     responseTransformStub.reset();
   });
 
-  it('should return 500 when read from DynamoDB fails', (done) => {
+  it('should return 500 when read from DynamoDB fails', () => {
     AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.reject('Scan method error'));
     const callback = sinon.stub();
-    get.handler(undefined, undefined, callback).catch(() => {
+    return get.handler(undefined, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 500);
       assert.equal(callback.firstCall.args[1].body, '"Scan method error"');
-      done();
     });
   });
 

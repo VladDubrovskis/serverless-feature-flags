@@ -6,7 +6,7 @@ describe('Feature flags PUT endpoint', () => {
   it('should return 501', () => {
     const callback = sinon.stub();
     return put.handler(undefined, undefined, callback).catch(() => {
-      assert.equal(callback.firstCall.args[1].statusCode, 502);
+      assert.equal(callback.firstCall.args[1].statusCode, 501);
     });
 
   });
