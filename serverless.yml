@@ -75,6 +75,13 @@ functions:
       - http:
           path: /flags
           method: post
+  flagsApiPut:
+    handler: src/api/put.handler
+    events:
+      - http:
+          path: /flags
+          method: put
+
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
