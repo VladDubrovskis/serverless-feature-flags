@@ -1,5 +1,5 @@
 const assert = require('assert');
-const deleteFlag = require('../src/api/deleteFlag.js');
+const deleteFlag = require('../src/api/delete.js');
 const sinon = require('sinon');
 
 describe('Feature flags DELETE endpoint', () => {
