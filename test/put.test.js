@@ -23,10 +23,13 @@ describe('Feature flags PUT endpoint', () => {
 
   it('should return 404 when the item is not found in DynamoDB', () => {
     const callback = sinon.stub();
+    const event = {
+        body: JSON.stringify({"featureName": "test1", "state": true})
+    };
     AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
-    return put.handler(undefined, undefined, callback).catch(() => {
+    return put.handler(event, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 404);
-      assert.equal(callback.firstCall.args[1].body, "'Not Found'");
+      assert.equal(callback.firstCall.args[1].body, "Not Found");
     });
   });
 });
