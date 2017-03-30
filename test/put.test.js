@@ -22,7 +22,7 @@ describe('Feature flags PUT endpoint', () => {
           noBody: JSON.stringify({"featureName": "test1", "state": true})
       };
 
-      return post.handler(event, undefined, callback).catch(() => {
+      return put.handler(event, undefined, callback).catch(() => {
         assert.equal(callback.firstCall.args[1].statusCode, 400);
         assert.equal(callback.firstCall.args[1].body, 'Invalid request');
       });
