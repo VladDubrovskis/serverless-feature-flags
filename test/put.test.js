@@ -16,6 +16,18 @@ describe('Feature flags PUT endpoint', () => {
     });
   });
 
+  it('should return 400 when there is no payload', () => {
+      const callback = sinon.stub();
+      const event = {
+          noBody: JSON.stringify({"featureName": "test1", "state": true})
+      };
+
+      return post.handler(event, undefined, callback).catch(() => {
+        assert.equal(callback.firstCall.args[1].statusCode, 400);
+        assert.equal(callback.firstCall.args[1].body, 'Invalid request');
+      });
+  });
+
   it('should return 404 when the item is not found in DynamoDB', () => {
     const callback = sinon.stub();
     AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
