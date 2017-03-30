@@ -9,13 +9,6 @@ describe('Feature flags PUT endpoint', () => {
     AWS.restore();
   });
 
-  it('should return 501', () => {
-    const callback = sinon.stub();
-    return put.handler(undefined, undefined, callback).catch(() => {
-      assert.equal(callback.firstCall.args[1].statusCode, 501);
-    });
-  });
-
   it('should return 400 when there is no payload', () => {
       const callback = sinon.stub();
       const event = {
