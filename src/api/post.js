@@ -1,10 +1,8 @@
 'use strict';
 const aws = require('aws-sdk');
+const isEmptyObject = require('../lib/is-empty-object');
 let payload;
 
-const isEmptyObject = (input) => {
-  return Object.keys(input).length === 0 && input.constructor === Object
-}
 module.exports.handler = (event, context, callback) => {
 
     try {
@@ -42,7 +40,7 @@ module.exports.handler = (event, context, callback) => {
     return new Promise((resolve, reject) => {
       docClient.get(checkItemParams).promise()
         .then((item) => {
-          if(isEmptyObject(item)) {
+          if(isEmptyObject.check(item)) {
             docClient.put(newItemParams).promise()
               .then(() => {
                   callback(null, {
