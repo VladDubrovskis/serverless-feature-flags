@@ -36,5 +36,9 @@ module.exports.handler = (event, context, callback) => {
         }
         reject();
       })
+      .catch((err) => {
+        callback(null, {statusCode: 500, body: JSON.stringify(err)});
+        reject(err);
+      })
   });
 };
