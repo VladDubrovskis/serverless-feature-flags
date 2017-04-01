@@ -41,4 +41,18 @@ describe('Feature flags PUT endpoint', () => {
       assert.equal(callback.firstCall.args[1].body, "Not Found");
     });
   });
+
+  it('should return 500 when DynamoDB get method fails', () => {
+      const callback = sandbox.stub();
+      AWS.mock('DynamoDB.DocumentClient', 'get', Promise.reject('Get method error'));
+      const event = {
+          body: JSON.stringify({"featureName": "test1", "state": false})
+      };
+
+      return put.handler(event, undefined, callback).catch(() => {
+        assert.equal(callback.firstCall.args[1].statusCode, 500);
+        assert.equal(callback.firstCall.args[1].body, '"Get method error"');
+      });
+  });
+
 });
