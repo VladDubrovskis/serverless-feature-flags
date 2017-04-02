@@ -25,7 +25,7 @@ The idea for the initial basic schema will be following:
   - [x] Fix failing unit test
  - [ ] Refactor the callbacks - repeated code all over the place
  - [x] Update the response HTTP error codes
- - [ ] Add PUT handler - to update flag in DynamoDB
+ - [x] Add PUT handler - to update flag in DynamoDB
  - [x] Refactor the method that checks if returned value is empty plain object - either move to own module to make DRY or use lodash?
  - [ ] Refactor the method that checks if no body has been passed to request - move to own module
  - [ ] Add DELETE hander - to delete flag from DynamoDB
