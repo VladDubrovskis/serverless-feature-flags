@@ -70,4 +70,20 @@ describe('Feature flags PUT endpoint', () => {
       });
   });
 
+  it('should return 500 when DynamoDB put method fails', () => {
+      const callback = sandbox.stub();
+      const event = {
+          body: JSON.stringify({"featureName": "test1", "state": true})
+      };
+      AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject('Put method error'));
+      AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({"featureName": "test1", "state": false}));
+      sandbox.stub(isEmptyObject, 'check').returns(false);
+
+
+      return put.handler(event, undefined, callback).catch(() => {
+        assert.equal(callback.firstCall.args[1].statusCode, 500);
+        assert.equal(callback.firstCall.args[1].body, '"Put method error"');
+      });
+  });
+
 });
