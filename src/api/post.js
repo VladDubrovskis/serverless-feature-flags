@@ -41,7 +41,7 @@ module.exports.handler = (event, context, callback) => {
       docClient.get(checkItemParams).promise()
         .then((item) => {
           if(isEmptyObject.check(item)) {
-            docClient.put(newItemParams).promise()
+            return docClient.put(newItemParams).promise()
               .then(() => {
                   callback(null, {
                       "statusCode": 201,
@@ -49,13 +49,6 @@ module.exports.handler = (event, context, callback) => {
                   });
                   resolve();
               })
-              .catch((err) => {
-                  callback(null, {
-                      "statusCode": 500,
-                      "body": JSON.stringify(err)
-                  });
-                  reject(err);
-              });
           } else {
             callback(null, {
                 "statusCode": 409,
