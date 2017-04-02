@@ -16,6 +16,21 @@ describe('Feature flags PUT endpoint', () => {
     sandbox.restore();
   });
 
+  it('should return 204 when payload is correct and item is found in DynamoDB', () => {
+      const callback = sandbox.stub();
+      const event = {
+          body: JSON.stringify({"featureName": "test1", "state": true})
+      };
+
+      AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({"featureName": "test1", "state": false}));
+      sandbox.stub(isEmptyObject, 'check').returns(false);
+      AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
+
+      return put.handler(event, undefined, callback).then(() => {
+        assert.equal(callback.firstCall.args[1].statusCode, 204);
+      });
+  });
+
   it('should return 400 when there is no payload', () => {
       const callback = sandbox.stub();
       const event = {
