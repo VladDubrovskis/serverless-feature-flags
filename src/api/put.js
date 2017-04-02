@@ -48,6 +48,10 @@ module.exports.handler = (event, context, callback) => {
                 callback(null, {"statusCode": 204});
                 resolve();
             })
+            .catch((err) => {
+                callback(null, {"statusCode": 500, "body": JSON.stringify(err)});
+                reject(err);
+            });
         }
       })
       .catch((err) => {
