@@ -41,15 +41,14 @@ module.exports.handler = (event, context, callback) => {
       .then((item) => {
         if(isEmptyObject.check(item)) {
           callback(null, { "statusCode": 404, "body": "Not Found"});
+          reject();
         } else {
-          callback(null, { "statusCode": 501, "body": "Not Implemented"});
           docClient.put(updateItemParams).promise()
             .then(() => {
                 callback(null, {"statusCode": 204});
                 resolve();
             })
         }
-        reject();
       })
       .catch((err) => {
         callback(null, {"statusCode": 500, "body": JSON.stringify(err)});
