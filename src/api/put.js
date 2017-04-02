@@ -18,6 +18,16 @@ module.exports.handler = (event, context, callback) => {
       });
   }
 
+  const updateItem = {
+      "featureName": payload.featureName,
+      "state": payload.state
+  };
+
+  const updateItemParams = {
+      "TableName": "featureFlags",
+      "Item": updateItem
+  };
+
   const checkItemParams = {
       "TableName": "featureFlags",
       "Key": {
@@ -33,6 +43,11 @@ module.exports.handler = (event, context, callback) => {
           callback(null, { "statusCode": 404, "body": "Not Found"});
         } else {
           callback(null, { "statusCode": 501, "body": "Not Implemented"});
+          docClient.put(updateItemParams).promise()
+            .then(() => {
+                callback(null, {"statusCode": 204});
+                resolve();
+            })
         }
         reject();
       })
