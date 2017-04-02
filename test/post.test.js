@@ -15,7 +15,7 @@ describe('Feature flags POST endpoint', () => {
       sandbox.restore();
     });
 
-    it('should return 201 when payload is correct', () => {
+    it('should return 201 when payload is correct and item is not in DynamoDB', () => {
         const callback = sandbox.stub();
         AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
         AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
