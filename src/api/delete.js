@@ -1,4 +1,7 @@
 'use strict';
+const aws = require('aws-sdk');
+const isEmptyObject = require('../lib/is-empty-object');
+let payload;
 
 module.exports.handler = (event, context, callback) => {
   try {
@@ -12,8 +15,25 @@ module.exports.handler = (event, context, callback) => {
         reject("Invalid request");
       });
   }
+
+  const checkItemParams = {
+      "TableName": "featureFlags",
+      "Key": {
+        "featureName": payload.featureName,
+      }
+  };
+  const docClient = new aws.DynamoDB.DocumentClient();
+
   return new Promise((resolve, reject) => {
-    callback(null, { statusCode: 501, body: "Not Implemented"});
-    reject();
-  });
+    docClient.get(checkItemParams).promise()
+      .then((item) => {
+        if(isEmptyObject.check(item)) {
+          callback(null, { "statusCode": 404, "body": "Not Found"});
+          reject();
+        } else {
+          callback(null, { "statusCode": 501, "body": "Not Implemented"});
+          reject();
+        }
+      });
+    });
 };
