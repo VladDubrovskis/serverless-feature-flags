@@ -16,7 +16,12 @@ describe('Feature flags DELETE endpoint', () => {
 
   it('should return 501', () => {
     const callback = sinon.stub();
-    return deleteFlag.handler(undefined, undefined, callback).catch(() => {
+    const event = {
+        body: JSON.stringify({"featureName": "test1"})
+    };
+    AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
+    sandbox.stub(isEmptyObject, 'check').returns(false);
+    return deleteFlag.handler(event, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 501);
     });
   });
@@ -46,4 +51,5 @@ describe('Feature flags DELETE endpoint', () => {
       assert.equal(callback.firstCall.args[1].body, "Not Found");
     });
   });
+
 });
