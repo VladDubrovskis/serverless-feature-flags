@@ -16,24 +16,34 @@ module.exports.handler = (event, context, callback) => {
       });
   }
 
-  const checkItemParams = {
+
+  const itemParams = {
       "TableName": "featureFlags",
       "Key": {
-        "featureName": payload.featureName,
+        "featureName": payload.featureName
       }
   };
   const docClient = new aws.DynamoDB.DocumentClient();
 
   return new Promise((resolve, reject) => {
-    docClient.get(checkItemParams).promise()
+    docClient.get(itemParams).promise()
       .then((item) => {
         if(isEmptyObject.check(item)) {
           callback(null, { "statusCode": 404, "body": "Not Found"});
           reject();
         } else {
-          callback(null, { "statusCode": 501, "body": "Not Implemented"});
-          reject();
+          return docClient.delete(itemParams).promise()
+            .then(() => {
+                callback(null, {"statusCode": 204});
+                resolve();
+            })
         }
-      });
-    });
+      })
+      .catch((err) => {
+        callback(null, {"statusCode": 500, "body": JSON.stringify(err)});
+        reject(err);
+      })
+  });
+
+
 };
