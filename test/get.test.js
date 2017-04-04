@@ -10,6 +10,7 @@ describe('Feature flags GET endpoint', () => {
 
   afterEach(() => {
     AWS.restore('DynamoDB.DocumentClient');
+    AWS.restore();
   });
 
   it('should return 200 with data from DynamoDB', () => {
