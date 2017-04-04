@@ -9,7 +9,6 @@ describe('Feature flags GET endpoint', () => {
   let responseTransformStub;
 
   afterEach(() => {
-    AWS.restore('DynamoDB.DocumentClient');
     AWS.restore();
   });
 
