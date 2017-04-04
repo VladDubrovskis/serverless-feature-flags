@@ -12,17 +12,19 @@ describe('Feature flags DELETE endpoint', () => {
 
   afterEach(() => {
     sandbox.restore();
+    AWS.restore();
   });
 
-  it('should return 501', () => {
+  it('should return 204 when the item is removed from DynamoDB', () => {
     const callback = sinon.stub();
     const event = {
         body: JSON.stringify({"featureName": "test1"})
     };
     AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
+    AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.resolve({}));
     sandbox.stub(isEmptyObject, 'check').returns(false);
     return deleteFlag.handler(event, undefined, callback).catch(() => {
-      assert.equal(callback.firstCall.args[1].statusCode, 501);
+      assert.equal(callback.firstCall.args[1].statusCode, 204);
     });
   });
 
