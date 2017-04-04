@@ -40,6 +40,21 @@ describe('Feature flags DELETE endpoint', () => {
       });
   });
 
+  it('should return 500 when DynamoDB delete method fails', () => {
+      const callback = sandbox.stub();
+      AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.reject('Delete method error'));
+      AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
+      const event = {
+          body: JSON.stringify({"featureName": "test1"})
+      };
+      sandbox.stub(isEmptyObject, 'check').returns(false);
+
+      return deleteFlag.handler(event, undefined, callback).catch(() => {
+        assert.equal(callback.firstCall.args[1].statusCode, 500);
+        assert.equal(callback.firstCall.args[1].body, '"Delete method error"');
+      });
+  });
+
   it('should return 404 when the item is not found in DynamoDB', () => {
     const callback = sandbox.stub();
     const event = {
