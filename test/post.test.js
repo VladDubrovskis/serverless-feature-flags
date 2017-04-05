@@ -31,18 +31,6 @@ describe('Feature flags POST endpoint', () => {
         });
     });
 
-    it('should return 400 when there is no payload', () => {
-        const callback = sandbox.stub();
-        const event = {
-            noBody: JSON.stringify({"featureName": "test1", "state": false})
-        };
-
-        return post.handler(event, undefined, callback).catch(() => {
-          assert.equal(callback.firstCall.args[1].statusCode, 400);
-          assert.equal(callback.firstCall.args[1].body, 'Invalid request');
-        });
-    });
-
     it('should return 500 when DynamoDB put method fails', () => {
         const callback = sandbox.stub();
         AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject('Put method error'));
@@ -84,6 +72,32 @@ describe('Feature flags POST endpoint', () => {
           assert.equal(callback.firstCall.args[1].body, '"Feature flag already exists"');
         });
     });
+
+    const invalidPayloadTestCases = [
+      {
+        description: 'Contains no body key',
+        event: {}
+      },
+      {
+        description: 'Body is empty string',
+        event: {body: ''}
+      },
+      {
+        description: 'Body is empty object',
+        event: {body: {}}
+      }
+    ];
+
+    invalidPayloadTestCases.forEach((testCase) => {
+      it(`should return 400 when the payload is invalid - ${testCase.description}`, () => {
+          const callback = sandbox.stub();
+          return post.handler(testCase.event, undefined, callback).catch(() => {
+            assert.equal(callback.firstCall.args[1].statusCode, 400);
+            assert.equal(callback.firstCall.args[1].body, 'Invalid request');
+          });
+      });
+    });
+
 
 
 });
