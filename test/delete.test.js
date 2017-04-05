@@ -28,18 +28,6 @@ describe('Feature flags DELETE endpoint', () => {
     });
   });
 
-  it('should return 400 when there is no payload', () => {
-      const callback = sandbox.stub();
-      const event = {
-          noBody: JSON.stringify({"featureName": "test1", "state": true})
-      };
-
-      return deleteFlag.handler(event, undefined, callback).catch(() => {
-        assert.equal(callback.firstCall.args[1].statusCode, 400);
-        assert.equal(callback.firstCall.args[1].body, 'Invalid request');
-      });
-  });
-
   it('should return 500 when DynamoDB delete method fails', () => {
       const callback = sandbox.stub();
       AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.reject('Delete method error'));
@@ -81,5 +69,31 @@ describe('Feature flags DELETE endpoint', () => {
       assert.equal(callback.firstCall.args[1].body, "Not Found");
     });
   });
+
+  const invalidPayloadTestCases = [
+    {
+      description: 'Contains no body key',
+      event: {}
+    },
+    {
+      description: 'Body is empty string',
+      event: {body: ''}
+    },
+    {
+      description: 'Body is empty object',
+      event: {body: {}}
+    }
+  ];
+
+  invalidPayloadTestCases.forEach((testCase) => {
+    it(`should return 400 when the payload is invalid - ${testCase.description}`, () => {
+        const callback = sandbox.stub();
+        return deleteFlag.handler(testCase.event, undefined, callback).catch(() => {
+          assert.equal(callback.firstCall.args[1].statusCode, 400);
+          assert.equal(callback.firstCall.args[1].body, 'Invalid request');
+        });
+    });
+  });
+
 
 });
