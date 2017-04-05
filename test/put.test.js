@@ -31,18 +31,6 @@ describe('Feature flags PUT endpoint', () => {
       });
   });
 
-  it('should return 400 when there is no payload', () => {
-      const callback = sandbox.stub();
-      const event = {
-          noBody: JSON.stringify({"featureName": "test1", "state": true})
-      };
-
-      return put.handler(event, undefined, callback).catch(() => {
-        assert.equal(callback.firstCall.args[1].statusCode, 400);
-        assert.equal(callback.firstCall.args[1].body, 'Invalid request');
-      });
-  });
-
   it('should return 404 when the item is not found in DynamoDB', () => {
     const callback = sandbox.stub();
     const event = {
@@ -84,6 +72,31 @@ describe('Feature flags PUT endpoint', () => {
         assert.equal(callback.firstCall.args[1].statusCode, 500);
         assert.equal(callback.firstCall.args[1].body, '"Put method error"');
       });
+  });
+
+  const invalidPayloadTestCases = [
+    {
+      description: 'Contains no body key',
+      event: {}
+    },
+    {
+      description: 'Body is empty string',
+      event: {body: ''}
+    },
+    {
+      description: 'Body is empty object',
+      event: {body: {}}
+    }
+  ];
+
+  invalidPayloadTestCases.forEach((testCase) => {
+    it(`should return 400 when the payload is invalid - ${testCase.description}`, () => {
+        const callback = sandbox.stub();
+        return put.handler(testCase.event, undefined, callback).catch(() => {
+          assert.equal(callback.firstCall.args[1].statusCode, 400);
+          assert.equal(callback.firstCall.args[1].body, 'Invalid request');
+        });
+    });
   });
 
 });
