@@ -31,7 +31,7 @@ The idea for the initial basic schema will be following:
  - [x] Add DELETE hander - to delete flag from DynamoDB
  - [ ] Refactor the code to make use of DynamoDB parameters for it not to overwrite the value if it already in the table - saves us make the check ourselves
  - [ ] All responses to be JSON
- - [ ] Update the body element check to verify it is not empty
+ - [x] Update the body element check to verify it is not empty - Mark as done as tests pass
  - [ ] Add integration tests
  - [ ] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
  - [ ] Add authentication mechanism for adding/removing/deleting features
