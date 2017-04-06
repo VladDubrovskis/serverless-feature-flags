@@ -1,5 +1,5 @@
 module.exports = {
-  check: (input) => {
+  validate: (input) => {
     try {
       JSON.parse(input);
       return true;
