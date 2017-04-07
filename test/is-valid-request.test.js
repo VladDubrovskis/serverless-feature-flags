@@ -4,7 +4,10 @@ const isEmptyRequest = require('../src/lib/is-valid-request');
 describe('Is empty request method', function() {
 
     it('should return true for JSON body', function() {
-        assert.equal(isEmptyRequest.validate(JSON.stringify({test: 1})), true);
+        const input = {test: 1};
+        const output = isEmptyRequest.validate(JSON.stringify(input));
+        assert.ok(output);
+        assert.deepEqual(input, output);
     });
 
     it('should return false for JSON body', function() {
