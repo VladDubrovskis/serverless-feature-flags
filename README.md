@@ -27,7 +27,7 @@ The idea for the initial basic schema will be following:
  - [x] Update the response HTTP error codes
  - [x] Add PUT handler - to update flag in DynamoDB
  - [x] Refactor the method that checks if returned value is empty plain object - either move to own module to make DRY or use lodash?
- - [ ] Refactor the method that checks if no body has been passed to request - move to own module
+ - [x] Refactor the method that checks if no body has been passed to request - move to own module
  - [x] Add DELETE hander - to delete flag from DynamoDB
  - [ ] Refactor the code to make use of DynamoDB parameters for it not to overwrite the value if it already in the table - saves us make the check ourselves
  - [ ] All responses to be JSON
