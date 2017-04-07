@@ -1,21 +1,19 @@
 'use strict';
 const aws = require('aws-sdk');
 const isEmptyObject = require('../lib/is-empty-object');
-
-let payload;
+const isValidRequest = require('../lib/is-valid-request');
 
 module.exports.handler = (event, context, callback) => {
 
-  try {
-      payload = JSON.parse(event.body);
-  } catch (e) {
-      return new Promise((resolve, reject) => {
-        callback(null, {
-            "statusCode": 400,
-            "body": "Invalid request"
-        });
-        reject("Invalid request");
+  const payload = isValidRequest.validate(event.body);
+  if (payload === false) {
+    return new Promise((resolve, reject) => {
+      callback(null, {
+          "statusCode": 400,
+          "body": "Invalid request"
       });
+      reject("Invalid request");
+    });
   }
 
   const updateItem = {
