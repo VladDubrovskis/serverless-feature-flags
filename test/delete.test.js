@@ -1,6 +1,7 @@
 const assert = require('assert');
 const deleteFlag = require('../src/api/delete.js');
 const isEmptyObject = require('../src/lib/is-empty-object');
+const isValidRequest = require('../src/lib/is-valid-request');
 const sinon = require('sinon');
 const AWS = require('aws-sdk-mock');
 let sandbox;
@@ -23,6 +24,8 @@ describe('Feature flags DELETE endpoint', () => {
     AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
     AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.resolve({}));
     sandbox.stub(isEmptyObject, 'check').returns(false);
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+
     return deleteFlag.handler(event, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 204);
     });
@@ -36,6 +39,7 @@ describe('Feature flags DELETE endpoint', () => {
           body: JSON.stringify({"featureName": "test1"})
       };
       sandbox.stub(isEmptyObject, 'check').returns(false);
+      sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return deleteFlag.handler(event, undefined, callback).catch(() => {
         assert.equal(callback.firstCall.args[1].statusCode, 500);
@@ -49,6 +53,7 @@ describe('Feature flags DELETE endpoint', () => {
       const event = {
           body: JSON.stringify({"featureName": "test1"})
       };
+      sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return deleteFlag.handler(event, undefined, callback).catch(() => {
         assert.equal(callback.firstCall.args[1].statusCode, 500);
@@ -63,6 +68,7 @@ describe('Feature flags DELETE endpoint', () => {
     };
     AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
     sandbox.stub(isEmptyObject, 'check').returns(true);
+    sandbox.stub(isValidRequest, 'validate').returns(true);
 
     return deleteFlag.handler(event, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 404);
@@ -70,28 +76,12 @@ describe('Feature flags DELETE endpoint', () => {
     });
   });
 
-  const invalidPayloadTestCases = [
-    {
-      description: 'Contains no body key',
-      event: {}
-    },
-    {
-      description: 'Body is empty string',
-      event: {body: ''}
-    },
-    {
-      description: 'Body is empty object',
-      event: {body: {}}
-    }
-  ];
-
-  invalidPayloadTestCases.forEach((testCase) => {
-    it(`should return 400 when the payload is invalid - ${testCase.description}`, () => {
-        const callback = sandbox.stub();
-        return deleteFlag.handler(testCase.event, undefined, callback).catch(() => {
-          assert.equal(callback.firstCall.args[1].statusCode, 400);
-          assert.equal(callback.firstCall.args[1].body, 'Invalid request');
-        });
+  it(`should return 400 when the payload is invalid`, () => {
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(false);
+    return deleteFlag.handler({}, undefined, callback).catch(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 400);
+      assert.equal(callback.firstCall.args[1].body, 'Invalid request');
     });
   });
 
