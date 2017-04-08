@@ -34,24 +34,22 @@ module.exports.handler = (event, context, callback) => {
     const docClient = new aws.DynamoDB.DocumentClient();
 
     return new Promise((resolve, reject) => {
-        return docClient.put(newItemParams).promise().then(() => {
-            callback(null, {
-                "statusCode": 201,
-                "body": "OK"
-            });
-            resolve();
-        }).catch((err) => {
-          let statusCode = 500;
-          if(err.statusCode && err.statusCode === 400) {
-            statusCode = 409;
-          }
-            callback(null, {
-                statusCode,
-                "body": JSON.stringify(err)
-            });
+        return docClient.put(newItemParams).promise()
+          .then(() => {
+              callback(null, {
+                  "statusCode": 201,
+                  "body": "OK"
+              });
+              resolve();
+          })
+          .catch((err) => {
+            let statusCode = 500;
+            if(err.statusCode && err.statusCode === 400) {
+              statusCode = 409;
+            }
+            callback(null, {statusCode, "body": JSON.stringify(err)});
             reject(err)
-        });
-
+          });
     });
 
 };
