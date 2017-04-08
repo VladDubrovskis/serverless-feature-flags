@@ -7,13 +7,13 @@ module.exports.handler = (event, context, callback) => {
 
     const payload = isValidRequest.validate(event.body);
     if (payload === false) {
-      return new Promise((resolve, reject) => {
-        callback(null, {
-            "statusCode": 400,
-            "body": "Invalid request"
+        return new Promise((resolve, reject) => {
+            callback(null, {
+                "statusCode": 400,
+                "body": "Invalid request"
+            });
+            reject("Invalid request");
         });
-        reject("Invalid request");
-      });
     }
 
     const newItem = {
@@ -23,45 +23,33 @@ module.exports.handler = (event, context, callback) => {
 
     const newItemParams = {
         "TableName": "featureFlags",
-        "Item": newItem
-    };
-
-    const checkItemParams = {
-        "TableName": "featureFlags",
-        "Key": {
-          "featureName": payload.featureName,
+        "Item": newItem,
+        "Expected": {
+            "featureName": {
+                "Exists": false
+            }
         }
     };
 
     const docClient = new aws.DynamoDB.DocumentClient();
 
-
     return new Promise((resolve, reject) => {
-      docClient.get(checkItemParams).promise()
-        .then((item) => {
-          if(isEmptyObject.check(item)) {
-            return docClient.put(newItemParams).promise()
-              .then(() => {
-                  callback(null, {
-                      "statusCode": 201,
-                      "body": "OK"
-                  });
-                  resolve();
-              })
-          } else {
+        return docClient.put(newItemParams).promise().then(() => {
             callback(null, {
-                "statusCode": 409,
-                "body": JSON.stringify("Feature flag already exists")
+                "statusCode": 201,
+                "body": "OK"
             });
-            reject("Feature flag already exists")
+            resolve();
+        }).catch((err) => {
+          let statusCode = 500;
+          if(err.statusCode && err.statusCode === 400) {
+            statusCode = 409;
           }
-        })
-        .catch((err) => {
-          callback(null, {
-              "statusCode": 500,
-              "body": JSON.stringify(err)
-          });
-          reject(err)
+            callback(null, {
+                statusCode,
+                "body": JSON.stringify(err)
+            });
+            reject(err)
         });
 
     });
