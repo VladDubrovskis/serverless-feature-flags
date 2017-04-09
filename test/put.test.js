@@ -1,6 +1,5 @@
 const assert = require('assert');
 const put = require('../src/api/put.js');
-const isEmptyObject = require('../src/lib/is-empty-object');
 const isValidRequest = require('../src/lib/is-valid-request');
 const sinon = require('sinon');
 const AWS = require('aws-sdk-mock');
@@ -24,7 +23,6 @@ describe('Feature flags PUT endpoint', () => {
       };
 
       AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
-      sandbox.stub(isEmptyObject, 'check').returns(false);
       sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return put.handler(event, undefined, callback).then(() => {
@@ -37,7 +35,6 @@ describe('Feature flags PUT endpoint', () => {
     const event = {
         body: JSON.stringify({"featureName": "test1", "state": true})
     };
-    sandbox.stub(isEmptyObject, 'check').returns(true);
     AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject({
       "message": "The conditional request failed",
       "code": "ConditionalCheckFailedException",
@@ -60,7 +57,6 @@ describe('Feature flags PUT endpoint', () => {
           body: JSON.stringify({"featureName": "test1", "state": true})
       };
       AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject('Put method error'));
-      sandbox.stub(isEmptyObject, 'check').returns(false);
       sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return put.handler(event, undefined, callback).catch(() => {
