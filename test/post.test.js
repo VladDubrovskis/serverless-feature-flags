@@ -1,6 +1,5 @@
 const assert = require('assert');
 const post = require('../src/api/post.js');
-const isEmptyObject = require('../src/lib/is-empty-object');
 const isValidRequest = require('../src/lib/is-valid-request');
 const sinon = require('sinon');
 const AWS = require('aws-sdk-mock');
@@ -23,7 +22,6 @@ describe('Feature flags POST endpoint', () => {
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
         };
-        sandbox.stub(isEmptyObject, 'check').returns(true);
         sandbox.stub(isValidRequest, 'validate').returns(true);
 
         return post.handler(event, undefined, callback).then(() => {
@@ -38,7 +36,6 @@ describe('Feature flags POST endpoint', () => {
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
         };
-        sandbox.stub(isEmptyObject, 'check').returns(true);
         sandbox.stub(isValidRequest, 'validate').returns(true);
 
         return post.handler(event, undefined, callback).catch(() => {
@@ -61,7 +58,6 @@ describe('Feature flags POST endpoint', () => {
         const event = {
             body: JSON.stringify({"featureName": "test1", "state": false})
         };
-        sandbox.stub(isEmptyObject, 'check').returns(false);
         sandbox.stub(isValidRequest, 'validate').returns(true);
 
         return post.handler(event, undefined, callback).catch(() => {
