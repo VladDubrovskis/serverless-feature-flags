@@ -1,6 +1,5 @@
 'use strict';
 const aws = require('aws-sdk');
-const isEmptyObject = require('../lib/is-empty-object');
 const isValidRequest = require('../lib/is-valid-request');
 
 module.exports.handler = (event, context, callback) => {
