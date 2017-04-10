@@ -22,7 +22,7 @@ describe('Feature flags PUT endpoint', () => {
           body: JSON.stringify({"featureName": "test1", "state": true})
       };
 
-      AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
+      AWS.mock('DynamoDB.DocumentClient', 'update', Promise.resolve());
       sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return put.handler(event, undefined, callback).then(() => {
@@ -35,7 +35,7 @@ describe('Feature flags PUT endpoint', () => {
     const event = {
         body: JSON.stringify({"featureName": "test1", "state": true})
     };
-    AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject({
+    AWS.mock('DynamoDB.DocumentClient', 'update', Promise.reject({
       "message": "The conditional request failed",
       "code": "ConditionalCheckFailedException",
       "time": "2017-04-08T08:39:18.125Z",
@@ -56,7 +56,7 @@ describe('Feature flags PUT endpoint', () => {
       const event = {
           body: JSON.stringify({"featureName": "test1", "state": true})
       };
-      AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject('Put method error'));
+      AWS.mock('DynamoDB.DocumentClient', 'update', Promise.reject('Put method error'));
       sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return put.handler(event, undefined, callback).catch(() => {
