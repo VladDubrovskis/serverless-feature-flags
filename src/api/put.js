@@ -15,14 +15,17 @@ module.exports.handler = (event, context, callback) => {
     });
   }
 
-  const updateItem = {
-      "featureName": payload.featureName,
-      "state": payload.state
-  };
-
   const updateItemParams = {
       "TableName": "featureFlags",
-      "Item": updateItem,
+      "Key": {
+        "featureName": payload.featureName
+      },
+      "AttributeUpdates": {
+        "state": {
+          "Action": "PUT",
+          "Value": payload.state
+        }
+      },
       "Expected": {
           "featureName": {
               "Exists": true,
@@ -34,7 +37,7 @@ module.exports.handler = (event, context, callback) => {
   const docClient = new aws.DynamoDB.DocumentClient();
 
   return new Promise((resolve, reject) => {
-      return docClient.put(updateItemParams).promise()
+      return docClient.update(updateItemParams).promise()
         .then(() => {
             callback(null, {"statusCode": 204});
             resolve();
