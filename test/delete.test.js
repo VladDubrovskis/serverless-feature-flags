@@ -1,6 +1,5 @@
 const assert = require('assert');
 const deleteFlag = require('../src/api/delete.js');
-const isEmptyObject = require('../src/lib/is-empty-object');
 const isValidRequest = require('../src/lib/is-valid-request');
 const sinon = require('sinon');
 const AWS = require('aws-sdk-mock');
@@ -22,7 +21,6 @@ describe('Feature flags DELETE endpoint', () => {
         body: JSON.stringify({"featureName": "test1"})
     };
     AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.resolve({}));
-    sandbox.stub(isEmptyObject, 'check').returns(false);
     sandbox.stub(isValidRequest, 'validate').returns(true);
 
     return deleteFlag.handler(event, undefined, callback).catch(() => {
@@ -36,7 +34,6 @@ describe('Feature flags DELETE endpoint', () => {
       const event = {
           body: JSON.stringify({"featureName": "test1"})
       };
-      sandbox.stub(isEmptyObject, 'check').returns(false);
       sandbox.stub(isValidRequest, 'validate').returns(true);
 
       return deleteFlag.handler(event, undefined, callback).catch(() => {
@@ -50,7 +47,6 @@ describe('Feature flags DELETE endpoint', () => {
     const event = {
         body: JSON.stringify({"featureName": "test1"})
     };
-    sandbox.stub(isEmptyObject, 'check').returns(true);
     AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.reject({
       "message": "The conditional request failed",
       "code": "ConditionalCheckFailedException",
