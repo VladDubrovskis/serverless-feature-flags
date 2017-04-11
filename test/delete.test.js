@@ -21,7 +21,6 @@ describe('Feature flags DELETE endpoint', () => {
     const event = {
         body: JSON.stringify({"featureName": "test1"})
     };
-    AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
     AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.resolve({}));
     sandbox.stub(isEmptyObject, 'check').returns(false);
     sandbox.stub(isValidRequest, 'validate').returns(true);
@@ -34,7 +33,6 @@ describe('Feature flags DELETE endpoint', () => {
   it('should return 500 when DynamoDB delete method fails', () => {
       const callback = sandbox.stub();
       AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.reject('Delete method error'));
-      AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
       const event = {
           body: JSON.stringify({"featureName": "test1"})
       };
@@ -47,32 +45,25 @@ describe('Feature flags DELETE endpoint', () => {
       });
   });
 
-  it('should return 500 when DynamoDB get method fails', () => {
-      const callback = sandbox.stub();
-      AWS.mock('DynamoDB.DocumentClient', 'get', Promise.reject('Get method error'));
-      const event = {
-          body: JSON.stringify({"featureName": "test1"})
-      };
-      sandbox.stub(isValidRequest, 'validate').returns(true);
-
-      return deleteFlag.handler(event, undefined, callback).catch(() => {
-        assert.equal(callback.firstCall.args[1].statusCode, 500);
-        assert.equal(callback.firstCall.args[1].body, '"Get method error"');
-      });
-  });
-
   it('should return 404 when the item is not found in DynamoDB', () => {
     const callback = sandbox.stub();
     const event = {
         body: JSON.stringify({"featureName": "test1"})
     };
-    AWS.mock('DynamoDB.DocumentClient', 'get', Promise.resolve({}));
     sandbox.stub(isEmptyObject, 'check').returns(true);
+    AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.reject({
+      "message": "The conditional request failed",
+      "code": "ConditionalCheckFailedException",
+      "time": "2017-04-08T08:39:18.125Z",
+      "requestId": "DFBVF8C8908V3RTLCVJ49DPSUNVV4KQNSO5AEMVJF66Q9ASUAAJG",
+      "statusCode": 400,
+      "retryable": false,
+      "retryDelay": 0
+    }));
     sandbox.stub(isValidRequest, 'validate').returns(true);
 
     return deleteFlag.handler(event, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 404);
-      assert.equal(callback.firstCall.args[1].body, "Not Found");
     });
   });
 
