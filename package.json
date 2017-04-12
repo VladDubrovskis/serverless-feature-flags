@@ -15,7 +15,8 @@
     "sinon": "^1.17.7"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "eslint": "eslint --ignore-path .gitignore ."
   },
   "repository": {
     "type": "git",
