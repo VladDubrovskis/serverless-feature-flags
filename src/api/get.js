@@ -1,17 +1,16 @@
-'use strict';
+
 const aws = require('aws-sdk');
 const responseTransform = require('../lib/response-transform');
 
 module.exports.handler = (event, context, callback) => {
   const params = {
-    "TableName" : "featureFlags",
+    TableName: 'featureFlags',
   };
 
   const docClient = new aws.DynamoDB.DocumentClient();
   const response = {
-    "statusCode": 200
+    statusCode: 200,
   };
-
 
 
   return new Promise((resolve, reject) => {
@@ -25,7 +24,7 @@ module.exports.handler = (event, context, callback) => {
         response.body = JSON.stringify(err);
         response.statusCode = 500;
         callback(null, response);
-        reject(err)
+        reject(err);
       });
   });
 };

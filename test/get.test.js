@@ -10,14 +10,15 @@ describe('Feature flags GET endpoint', () => {
 
   afterEach(() => {
     AWS.restore();
+    responseTransformStub.reset();
   });
 
   it('should return 200 with data from DynamoDB', () => {
     AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.resolve({}));
 
     responseTransformResponse = {
-        "test2": true,
-        "test": false
+      test2: true,
+      test: false,
     };
 
     responseTransformStub = sinon.stub(responseTransform, 'transform').returns(responseTransformResponse);
@@ -28,8 +29,6 @@ describe('Feature flags GET endpoint', () => {
       assert.equal(responseTransformStub.callCount, 1);
       assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));
     });
-
-    responseTransformStub.reset();
   });
 
   it('should return 500 when read from DynamoDB fails', () => {
@@ -40,5 +39,4 @@ describe('Feature flags GET endpoint', () => {
       assert.equal(callback.firstCall.args[1].body, '"Scan method error"');
     });
   });
-
 });
