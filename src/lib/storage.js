@@ -1,6 +1,6 @@
 module.exports = {
-  get: () => true,
-  put: () => true,
-  update: () => true,
-  delete: () => true,
+  get: () => Promise.resolve(),
+  put: () => Promise.resolve(),
+  update: () => Promise.resolve(),
+  delete: () => Promise.resolve(),
 };
