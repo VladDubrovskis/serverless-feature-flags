@@ -1,4 +1,3 @@
-const assert = require('assert');
 const storage = require('../src/lib/storage');
 
 describe('The storage module', () => {
