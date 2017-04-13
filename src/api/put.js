@@ -1,4 +1,3 @@
-
 const aws = require('aws-sdk');
 const isValidRequest = require('../lib/is-valid-request');
 

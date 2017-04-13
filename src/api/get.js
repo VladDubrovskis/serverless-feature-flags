@@ -1,4 +1,3 @@
-
 const aws = require('aws-sdk');
 const responseTransform = require('../lib/response-transform');
 
