@@ -1,8 +1,19 @@
+const AWS = require('aws-sdk-mock');
 const storage = require('../src/lib/storage');
 
 describe('The storage module', () => {
-  it('should have get method', (done) => {
-    storage.get().then(done);
+  afterEach(() => {
+    AWS.restore();
+  });
+
+  it('should have get method that resolves', () => {
+    AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.resolve({}));
+    return storage.get();
+  });
+
+  it('should have get method that rejects', (done) => {
+    AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.reject());
+    storage.get().catch(done);
   });
 
   it('should have put method', (done) => {
