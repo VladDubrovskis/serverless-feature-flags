@@ -13,13 +13,11 @@ describe('The storage module', () => {
     });
   });
 
-  it('should have get method that rejects', (done) => {
-    AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.reject());
-    storage.get().catch(done);
-  });
-
-  it('should have put method', (done) => {
-    storage.put().then(done);
+  it('should have put method that returns a promise', (done) => {
+    AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve({}));
+    storage.put().then(() => {
+      done();
+    });
   });
 
   it('should have update method', (done) => {
