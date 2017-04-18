@@ -12,4 +12,22 @@ module.exports = {
   put: () => Promise.resolve(),
   update: () => Promise.resolve(),
   delete: () => Promise.resolve(),
+  put: (featureName, state) => {
+    const newItemParams = {
+      TableName: 'featureFlags',
+      Item: {
+        featureName,
+        state,
+      },
+      Expected: {
+        featureName: {
+          Exists: false,
+        },
+      },
+    };
+
+    const docClient = new aws.DynamoDB.DocumentClient();
+
+    return docClient.put(newItemParams).promise();
+  },
 };
