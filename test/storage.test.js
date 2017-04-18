@@ -6,9 +6,11 @@ describe('The storage module', () => {
     AWS.restore();
   });
 
-  it('should have get method that resolves', () => {
+  it('should have get method that returns a promise', (done) => {
     AWS.mock('DynamoDB.DocumentClient', 'scan', Promise.resolve({}));
-    return storage.get();
+    storage.get().then(() => {
+      done();
+    });
   });
 
   it('should have get method that rejects', (done) => {
