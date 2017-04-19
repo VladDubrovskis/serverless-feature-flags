@@ -9,8 +9,6 @@ module.exports = {
     const docClient = new aws.DynamoDB.DocumentClient();
     return docClient.scan(params).promise();
   },
-  put: () => Promise.resolve(),
-  update: () => Promise.resolve(),
   delete: () => Promise.resolve(),
   put: (featureName, state) => {
     const newItemParams = {
@@ -29,5 +27,28 @@ module.exports = {
     const docClient = new aws.DynamoDB.DocumentClient();
 
     return docClient.put(newItemParams).promise();
+  },
+  update: (featureName, state) => {
+    const updateItemParams = {
+      TableName: 'featureFlags',
+      Key: {
+        featureName,
+      },
+      AttributeUpdates: {
+        state: {
+          Action: 'PUT',
+          Value: state,
+        },
+      },
+      Expected: {
+        featureName: {
+          Exists: true,
+          Value: featureName,
+        },
+      },
+    };
+
+    const docClient = new aws.DynamoDB.DocumentClient();
+    return docClient.update(updateItemParams).promise();
   },
 };
