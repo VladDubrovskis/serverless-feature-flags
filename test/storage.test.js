@@ -20,8 +20,11 @@ describe('The storage module', () => {
     });
   });
 
-  it('should have update method', (done) => {
-    storage.update().then(done);
+  it('should have update method that returns a promise', (done) => {
+    AWS.mock('DynamoDB.DocumentClient', 'update', Promise.resolve({}));
+    storage.update().then(() => {
+      done();
+    });
   });
 
   it('should have delete method', (done) => {
