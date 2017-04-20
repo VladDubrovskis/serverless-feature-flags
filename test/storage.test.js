@@ -27,7 +27,10 @@ describe('The storage module', () => {
     });
   });
 
-  it('should have delete method', (done) => {
-    storage.delete().then(done);
+  it('should have delete method that returns a promise', (done) => {
+    const dynamoDBMock = AWS.mock('DynamoDB.DocumentClient', 'delete', Promise.resolve({}));
+    storage.delete().then(() => {
+      done();
+    });
   });
 });
