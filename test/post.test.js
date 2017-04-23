@@ -2,7 +2,7 @@ const assert = require('assert');
 const post = require('../src/api/post.js');
 const isValidRequest = require('../src/lib/is-valid-request');
 const sinon = require('sinon');
-const AWS = require('aws-sdk-mock');
+const storage = require('../src/lib/storage');
 
 let sandbox;
 
@@ -12,54 +12,39 @@ describe('Feature flags POST endpoint', () => {
   });
 
   afterEach(() => {
-    AWS.restore();
     sandbox.restore();
   });
 
-  it('should return 201 when payload is correct and item is not in DynamoDB', () => {
+  it('should return 201 when payload is correct and item is not in database', () => {
     const callback = sandbox.stub();
-    AWS.mock('DynamoDB.DocumentClient', 'put', Promise.resolve());
+    const payload = { featureName: 'test1', state: false };
+    sandbox.stub(isValidRequest, 'validate').returns(payload);
+    const storageStub = sandbox.stub(storage, 'put').returns(Promise.resolve());
 
-    const event = { body: JSON.stringify({ featureName: 'test1', state: false }) };
-    sandbox.stub(isValidRequest, 'validate').returns(true);
-
-    return post.handler(event, undefined, callback).then(() => {
+    return post.handler({}, undefined, callback).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 201);
       assert.equal(callback.firstCall.args[1].body, 'OK');
+      assert.equal(storageStub.calledWith(payload.featureName, payload.state), true);
     });
   });
 
-  it('should return 500 when DynamoDB put method fails', () => {
+  it('should return 500 when database put method fails', () => {
     const callback = sandbox.stub();
-    AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject('Put method error'));
-    const event = {
-      body: JSON.stringify({ featureName: 'test1', state: false }),
-    };
     sandbox.stub(isValidRequest, 'validate').returns(true);
+    sandbox.stub(storage, 'put').returns(Promise.reject('Put method error'));
 
-    return post.handler(event, undefined, callback).catch(() => {
+    return post.handler({}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 500);
       assert.equal(callback.firstCall.args[1].body, '"Put method error"');
     });
   });
 
-  it('should return 409 when feature flag is already in DynamoDB', () => {
+  it('should return 409 when feature flag is already in database', () => {
     const callback = sandbox.stub();
-    AWS.mock('DynamoDB.DocumentClient', 'put', Promise.reject({
-      message: 'The conditional request failed',
-      code: 'ConditionalCheckFailedException',
-      time: '2017-04-08T08:39:18.125Z',
-      requestId: 'DFBVF8C8908V3RTLCVJ49DPSUNVV4KQNSO5AEMVJF66Q9ASUAAJG',
-      statusCode: 400,
-      retryable: false,
-      retryDelay: 0,
-    }));
-    const event = {
-      body: JSON.stringify({ featureName: 'test1', state: false }),
-    };
     sandbox.stub(isValidRequest, 'validate').returns(true);
+    sandbox.stub(storage, 'put').returns(Promise.reject({ statusCode: 400 }));
 
-    return post.handler(event, undefined, callback).catch(() => {
+    return post.handler({}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 409);
     });
   });
