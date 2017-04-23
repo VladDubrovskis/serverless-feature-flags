@@ -64,6 +64,6 @@ module.exports = {
       },
     };
     const docClient = new aws.DynamoDB.DocumentClient();
-    return docClient.delete(itemParams).promise()
+    return docClient.delete(itemParams).promise();
   },
 };
