@@ -17,7 +17,7 @@ describe('Feature flags GET endpoint', () => {
     sandbox.restore();
   });
 
-  it('should return 200 with data from DynamoDB', () => {
+  it('should return 200 with data from database', () => {
     responseTransformResponse = {
       test2: true,
       test: false,
@@ -33,7 +33,7 @@ describe('Feature flags GET endpoint', () => {
     });
   });
 
-  it('should return 500 when read from DynamoDB fails', () => {
+  it('should return 500 when read from database fails', () => {
     const callback = sandbox.stub();
     sandbox.stub(storage, 'get').returns(Promise.reject('Scan method error'));
     return get.handler(undefined, undefined, callback).catch(() => {
