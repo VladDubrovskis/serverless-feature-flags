@@ -1,4 +1,4 @@
-const aws = require('aws-sdk');
+const storage = require('../lib/storage');
 const isValidRequest = require('../lib/is-valid-request');
 
 module.exports.handler = (event, context, callback) => {
@@ -13,28 +13,7 @@ module.exports.handler = (event, context, callback) => {
     });
   }
 
-  const updateItemParams = {
-    TableName: 'featureFlags',
-    Key: {
-      featureName: payload.featureName,
-    },
-    AttributeUpdates: {
-      state: {
-        Action: 'PUT',
-        Value: payload.state,
-      },
-    },
-    Expected: {
-      featureName: {
-        Exists: true,
-        Value: payload.featureName,
-      },
-    },
-  };
-
-  const docClient = new aws.DynamoDB.DocumentClient();
-
-  return new Promise((resolve, reject) => docClient.update(updateItemParams).promise()
+  return new Promise((resolve, reject) => storage.update(payload.featureName, payload.state)
         .then(() => {
           callback(null, { statusCode: 204 });
           resolve();
