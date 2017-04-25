@@ -34,7 +34,7 @@ The idea for the initial basic schema will be following:
  - [x] Update the body element check to verify it is not empty - Mark as done as tests pass
  - [x] Add eslint
  - [ ] Add integration tests
- - [ ] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
+ - [x] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
  - [ ] Add authentication mechanism for adding/removing/deleting features
  - [ ] Cloudfront - configure the cache time for a very long time
  - [ ] Add a clear cache trigger when the DynamoDB records is added/removed/updated
