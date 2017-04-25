@@ -1,4 +1,4 @@
-const aws = require('aws-sdk');
+const storage = require('../lib/storage');
 const isValidRequest = require('../lib/is-valid-request');
 
 module.exports.handler = (event, context, callback) => {
@@ -13,22 +13,7 @@ module.exports.handler = (event, context, callback) => {
     });
   }
 
-
-  const itemParams = {
-    TableName: 'featureFlags',
-    Key: {
-      featureName: payload.featureName,
-    },
-    Expected: {
-      featureName: {
-        Exists: true,
-        Value: payload.featureName,
-      },
-    },
-  };
-  const docClient = new aws.DynamoDB.DocumentClient();
-
-  return new Promise((resolve, reject) => docClient.delete(itemParams).promise()
+  return new Promise((resolve, reject) => storage.delete(payload.featureName)
       .then(() => {
         callback(null, { statusCode: 204 });
         resolve();
