@@ -7,26 +7,37 @@ module.exports.handler = (event, context, callback) => {
     return new Promise((resolve, reject) => {
       callback(null, {
         statusCode: 400,
-        body: 'Invalid request',
+        body: {
+          error: {
+            code: 400,
+            message: 'Invalid request',
+          },
+        },
       });
       reject('Invalid request');
     });
   }
 
   return new Promise((resolve, reject) => storage.put(payload.featureName, payload.state)
-          .then(() => {
-            callback(null, {
-              statusCode: 201,
-              body: 'OK',
-            });
-            resolve();
-          })
-          .catch((err) => {
-            let statusCode = 500;
-            if (err.statusCode && err.statusCode === 400) {
-              statusCode = 409;
-            }
-            callback(null, { statusCode, body: JSON.stringify(err) });
-            reject(err);
-          }));
+      .then(() => {
+        callback(null, { statusCode: 204 });
+        resolve();
+      })
+      .catch((err) => {
+        let statusCode = 500;
+        if (err.statusCode && err.statusCode === 400) {
+          statusCode = 409;
+        }
+        callback(null,
+          {
+            statusCode,
+            body: JSON.stringify({
+              error: {
+                code: statusCode,
+                message: err,
+              },
+            }),
+          });
+        reject(err);
+      }));
 };

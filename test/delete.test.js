@@ -34,7 +34,7 @@ describe('Feature flags DELETE endpoint', () => {
 
     return deleteFlag.handler({}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 500);
-      assert.equal(callback.firstCall.args[1].body, '"Delete method error"');
+      assert.equal(callback.firstCall.args[1].body, '{"error":{"code":500,"message":"Delete method error"}}');
     });
   });
 
@@ -53,7 +53,12 @@ describe('Feature flags DELETE endpoint', () => {
     sandbox.stub(isValidRequest, 'validate').returns(false);
     return deleteFlag.handler({}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 400);
-      assert.equal(callback.firstCall.args[1].body, 'Invalid request');
+      assert.deepEqual(callback.firstCall.args[1].body, {
+        error: {
+          code: 400,
+          message: 'Invalid request',
+        },
+      });
     });
   });
 });

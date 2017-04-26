@@ -22,8 +22,7 @@ describe('Feature flags POST endpoint', () => {
     const storageStub = sandbox.stub(storage, 'put').returns(Promise.resolve());
 
     return post.handler({}, undefined, callback).then(() => {
-      assert.equal(callback.firstCall.args[1].statusCode, 201);
-      assert.equal(callback.firstCall.args[1].body, 'OK');
+      assert.equal(callback.firstCall.args[1].statusCode, 204);
       assert.equal(storageStub.calledWith(payload.featureName, payload.state), true);
     });
   });
@@ -35,7 +34,7 @@ describe('Feature flags POST endpoint', () => {
 
     return post.handler({}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 500);
-      assert.equal(callback.firstCall.args[1].body, '"Put method error"');
+      assert.equal(callback.firstCall.args[1].body, '{"error":{"code":500,"message":"Put method error"}}');
     });
   });
 
@@ -55,7 +54,12 @@ describe('Feature flags POST endpoint', () => {
     sandbox.stub(isValidRequest, 'validate').returns(false);
     return post.handler({}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 400);
-      assert.equal(callback.firstCall.args[1].body, 'Invalid request');
+      assert.deepEqual(callback.firstCall.args[1].body, {
+        error: {
+          code: 400,
+          message: 'Invalid request',
+        },
+      });
     });
   });
 });

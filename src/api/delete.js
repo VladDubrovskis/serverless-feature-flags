@@ -7,7 +7,12 @@ module.exports.handler = (event, context, callback) => {
     return new Promise((resolve, reject) => {
       callback(null, {
         statusCode: 400,
-        body: 'Invalid request',
+        body: {
+          error: {
+            code: 400,
+            message: 'Invalid request',
+          },
+        },
       });
       reject('Invalid request');
     });
@@ -23,7 +28,16 @@ module.exports.handler = (event, context, callback) => {
         if (err.statusCode && err.statusCode === 400) {
           statusCode = 404;
         }
-        callback(null, { statusCode, body: JSON.stringify(err) });
+        callback(null,
+          {
+            statusCode,
+            body: JSON.stringify({
+              error: {
+                code: statusCode,
+                message: err,
+              },
+            }),
+          });
         reject(err);
       }));
 };
