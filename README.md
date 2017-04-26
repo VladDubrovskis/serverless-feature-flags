@@ -33,10 +33,14 @@ The idea for the initial basic schema will be following:
  - [x] All responses to be JSON
  - [x] Update the body element check to verify it is not empty - Mark as done as tests pass
  - [x] Add eslint
+ - [ ] Work out if should use 204 with no body or should respond with some sort of JSON response on successful calls
+ - [ ]
+ - [ ] Add a generic handler to be make code more DRY
  - [ ] Add integration tests
  - [x] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
  - [ ] Add authentication mechanism for adding/removing/deleting features
  - [ ] Cloudfront - configure the cache time for a very long time
+ - [ ] Cloudfront/AWS multi region fallback config?
  - [ ] Add a clear cache trigger when the DynamoDB records is added/removed/updated
  - [ ] Think of authentication mechanism for adding/removing/deleting features - for initial working scenario document and possibly add some scripts to talk to DynamoDB via AWS-SDK
  - [ ] Document and possibly try to automate attaching a domain name
