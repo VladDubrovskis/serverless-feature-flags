@@ -1,3 +1,5 @@
 module.exports = {
-  execute: () => true,
+  execute: () => {
+    return Promise.resolve(true);
+  },
 };
