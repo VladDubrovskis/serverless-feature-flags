@@ -1,7 +1,7 @@
 const isValidRequest = require('../lib/is-valid-request');
 
 module.exports = {
-  execute: (event, context, callback) => {
+  execute: (method, event, context, callback) => {
     const payload = isValidRequest.validate(event.body);
     if (payload === false) {
       return new Promise((resolve, reject) => {
@@ -19,6 +19,7 @@ module.exports = {
     }
 
     return new Promise((resolve) => {
+      method(event, context, callback);
       callback(undefined, { statusCode: 203 });
       resolve();
     });

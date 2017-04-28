@@ -15,17 +15,20 @@ describe('Lambda handler', () => {
   });
 
   it('should resolve with a 203 on succesfull call', () => {
+    const method = sandbox.stub();
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(true);
-    return handler.execute({}, undefined, callback).then(() => {
+    return handler.execute(method, {}, undefined, callback).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 203);
+      assert.equal(method.calledWith({}, undefined, callback), true);
     });
   });
 
   it('should return 400 when the payload is invalid', () => {
+    const method = sandbox.stub();
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(false);
-    return handler.execute({}, undefined, callback).catch(() => {
+    return handler.execute(method, {}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 400);
       assert.deepEqual(callback.firstCall.args[1].body, {
         error: {
