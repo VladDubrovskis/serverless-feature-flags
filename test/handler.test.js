@@ -15,7 +15,7 @@ describe('Lambda handler', () => {
   });
 
   it('should resolve with a 203 on succesfull call', () => {
-    const method = sandbox.stub();
+    const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(true);
     return handler.execute(method, {}, undefined, callback).then(() => {

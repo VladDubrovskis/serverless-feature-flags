@@ -19,9 +19,11 @@ module.exports = {
     }
 
     return new Promise((resolve) => {
-      method(event, context, callback);
-      callback(undefined, { statusCode: 203 });
-      resolve();
+      method(event, context, callback)
+        .then(() => {
+          callback(null, { statusCode: 203 });
+          resolve();
+        });
     });
   },
 };
