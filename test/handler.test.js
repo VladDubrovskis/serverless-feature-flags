@@ -24,6 +24,16 @@ describe('Lambda handler', () => {
     });
   });
 
+  it('should resolve with a 500 on failed call', () => {
+    const method = sandbox.stub().returns(Promise.reject());
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+    return handler.execute(method, {}, undefined, callback).catch(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 500);
+      assert.equal(method.calledWith({}, undefined, callback), true);
+    });
+  });
+
   it('should return 400 when the payload is invalid', () => {
     const method = sandbox.stub();
     const callback = sandbox.stub();

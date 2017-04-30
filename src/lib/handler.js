@@ -18,11 +18,15 @@ module.exports = {
       });
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       method(event, context, callback)
         .then(() => {
           callback(null, { statusCode: 203 });
           resolve();
+        })
+        .catch((err) => {
+          callback(null, { statusCode: 500 });
+          reject(err);
         });
     });
   },
