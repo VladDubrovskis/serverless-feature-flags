@@ -1,7 +1,7 @@
 const isValidRequest = require('../lib/is-valid-request');
 
 module.exports = {
-  execute: (method, event, context, callback) => {
+  execute: (method, event, context, callback, statusCode) => {
     const payload = isValidRequest.validate(event.body);
     if (payload === false) {
       return new Promise((resolve, reject) => {
@@ -21,11 +21,22 @@ module.exports = {
     return new Promise((resolve, reject) => {
       method(event, context, callback)
         .then(() => {
-          callback(null, { statusCode: 203 });
+          callback(null, { statusCode });
           resolve();
         })
         .catch((err) => {
-          callback(null, { statusCode: 500 });
+          let statusCode = 500;
+
+          callback(null,
+            {
+              statusCode,
+              body: JSON.stringify({
+                error: {
+                  code: statusCode,
+                  message: err,
+                },
+              }),
+            });
           reject(err);
         });
     });

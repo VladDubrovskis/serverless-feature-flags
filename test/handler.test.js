@@ -18,8 +18,18 @@ describe('Lambda handler', () => {
     const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(true);
-    return handler.execute(method, {}, undefined, callback).then(() => {
+    return handler.execute(method, {}, undefined, callback, 203).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 203);
+      assert.equal(method.calledWith({}, undefined, callback), true);
+    });
+  });
+
+  it('should resolve with any code passed on succesfull call', () => {
+    const method = sandbox.stub().returns(Promise.resolve());
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+    return handler.execute(method, {}, undefined, callback, 301).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 301);
       assert.equal(method.calledWith({}, undefined, callback), true);
     });
   });
