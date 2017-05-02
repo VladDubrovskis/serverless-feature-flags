@@ -14,6 +14,16 @@ describe('Lambda handler', () => {
     sandbox.restore();
   });
 
+  it('should resolve with a 204 on succesfull call by default if no success status code has been passed', () => {
+    const method = sandbox.stub().returns(Promise.resolve());
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+    return handler.execute(method, {}, undefined, callback, 204).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 204);
+      assert.equal(method.calledWith({}, undefined, callback), true);
+    });
+  });
+
   it('should resolve with a 203 on succesfull call', () => {
     const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
