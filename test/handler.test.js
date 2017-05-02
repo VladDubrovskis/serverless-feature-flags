@@ -54,6 +54,16 @@ describe('Lambda handler', () => {
     });
   });
 
+  it('should support error response mapping. e.g. 400 to 404', () => {
+    const method = sandbox.stub().returns(Promise.reject({ statusCode: 400 }));
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+    return handler.execute(method, {}, undefined, callback, 204, { 400: 404 }).catch(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 404);
+      assert.equal(method.calledWith({}, undefined, callback), true);
+    });
+  });
+
   it('should return 400 when the payload is invalid', () => {
     const method = sandbox.stub();
     const callback = sandbox.stub();
