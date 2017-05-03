@@ -20,7 +20,7 @@ module.exports = {
     }
 
     return new Promise((resolve, reject) => {
-      method(event, context, callback)
+      method(payload)
         .then(() => {
           callback(null, { statusCode });
           resolve();
@@ -36,7 +36,7 @@ module.exports = {
               statusCode: responseStatusCode,
               body: JSON.stringify({
                 error: {
-                  code: statusCode,
+                  code: responseStatusCode,
                   message: err,
                 },
               }),

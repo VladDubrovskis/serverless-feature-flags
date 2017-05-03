@@ -17,10 +17,11 @@ describe('Lambda handler', () => {
   it('should resolve with a 204 on succesfull call by default if no success status code has been passed', () => {
     const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
-    sandbox.stub(isValidRequest, 'validate').returns(true);
-    return handler.execute(method, {}, undefined, callback, 204).then(() => {
+    const payload = { featureName: 1, state: 2 };
+    sandbox.stub(isValidRequest, 'validate').returns(payload);
+    return handler.execute(method, payload, undefined, callback, 204).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 204);
-      assert.equal(method.calledWith({}, undefined, callback), true);
+      assert.equal(method.calledWith(payload), true);
     });
   });
 
@@ -30,7 +31,6 @@ describe('Lambda handler', () => {
     sandbox.stub(isValidRequest, 'validate').returns(true);
     return handler.execute(method, {}, undefined, callback, 203).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 203);
-      assert.equal(method.calledWith({}, undefined, callback), true);
     });
   });
 
@@ -40,7 +40,6 @@ describe('Lambda handler', () => {
     sandbox.stub(isValidRequest, 'validate').returns(true);
     return handler.execute(method, {}, undefined, callback, 301).then(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 301);
-      assert.equal(method.calledWith({}, undefined, callback), true);
     });
   });
 
@@ -50,7 +49,6 @@ describe('Lambda handler', () => {
     sandbox.stub(isValidRequest, 'validate').returns(true);
     return handler.execute(method, {}, undefined, callback).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 500);
-      assert.equal(method.calledWith({}, undefined, callback), true);
     });
   });
 
@@ -60,7 +58,6 @@ describe('Lambda handler', () => {
     sandbox.stub(isValidRequest, 'validate').returns(true);
     return handler.execute(method, {}, undefined, callback, 204, { 400: 404 }).catch(() => {
       assert.equal(callback.firstCall.args[1].statusCode, 404);
-      assert.equal(method.calledWith({}, undefined, callback), true);
     });
   });
 
