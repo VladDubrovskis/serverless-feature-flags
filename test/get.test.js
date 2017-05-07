@@ -1,14 +1,12 @@
 const assert = require('assert');
 const get = require('../src/api/get.js');
 const sinon = require('sinon');
+const handler = require('../src/lib/handler');
 const storage = require('../src/lib/storage');
-const responseTransform = require('../src/lib/response-transform');
 
 let sandbox;
 
 describe('Feature flags GET endpoint', () => {
-  let responseTransformResponse;
-
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
   });
@@ -17,28 +15,13 @@ describe('Feature flags GET endpoint', () => {
     sandbox.restore();
   });
 
-  it('should return 200 with data from database', () => {
-    responseTransformResponse = {
-      test2: true,
-      test: false,
-    };
-
-    sandbox.stub(storage, 'get').returns(Promise.resolve({ Items: {} }));
-    sandbox.stub(responseTransform, 'transform').returns(responseTransformResponse);
-
+  it('should use generic handler and pass the storage.put as method', () => {
     const callback = sandbox.stub();
-    return get.handler(undefined, undefined, callback).then(() => {
-      assert.equal(callback.firstCall.args[1].statusCode, 200);
-      assert.equal(callback.firstCall.args[1].body, JSON.stringify(responseTransformResponse));
-    });
-  });
-
-  it('should return 500 when read from database fails', () => {
-    const callback = sandbox.stub();
-    sandbox.stub(storage, 'get').returns(Promise.reject('Scan method error'));
-    return get.handler(undefined, undefined, callback).catch(() => {
-      assert.equal(callback.firstCall.args[1].statusCode, 500);
-      assert.equal(callback.firstCall.args[1].body, '"Scan method error"');
+    const handlerStub = sandbox.stub(handler, 'execute').returns(Promise.resolve());
+    const context = { context: 1 };
+    const event = {};
+    return get.handler(event, context, callback).then(() => {
+      assert(handlerStub.calledWith(storage.get, event, context, callback), true);
     });
   });
 });
