@@ -15,7 +15,7 @@ describe('Lambda handler', () => {
     sandbox.restore();
   });
 
-  it('should resolve with a 204 on succesfull call by default if no success status code has been passed', () => {
+  it('should resolve with a 204 on successful call by default if no success status code has been passed', () => {
     const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
     const payload = { featureName: 1, state: 2 };
@@ -26,7 +26,7 @@ describe('Lambda handler', () => {
     });
   });
 
-  it('should resolve with a 203 on succesfull call', () => {
+  it('should resolve with a 203 on successful call', () => {
     const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(true);
@@ -35,7 +35,7 @@ describe('Lambda handler', () => {
     });
   });
 
-  it('should resolve with any code passed on succesfull call', () => {
+  it('should resolve with any code passed on successful call', () => {
     const method = sandbox.stub().returns(Promise.resolve());
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(true);
@@ -62,7 +62,6 @@ describe('Lambda handler', () => {
     });
   });
 
-  it('should return 400 when the payload is invalid', () => {
   it('should not run the payload validation on GET request', () => {
     const method = sandbox.stub().returns(Promise.resolve({ Items: {} }));
     const callback = sandbox.stub();
@@ -84,6 +83,7 @@ describe('Lambda handler', () => {
     });
   });
 
+  it('should return 400 when the payload is invalid on other requests', () => {
     const method = sandbox.stub();
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(false);
