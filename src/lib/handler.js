@@ -4,6 +4,8 @@ module.exports = {
   execute: (method, event, context, callback, statusCode = 204, errorCodeMapping = {}) => {
     let responseStatusCode = statusCode;
     const payload = isValidRequest.validate(event.body);
+    const httpMethod = event.httpMethod;
+    const payload = httpMethod !== 'GET' ? isValidRequest.validate(event.body) : '';
     if (payload === false) {
       return new Promise((resolve, reject) => {
         callback(null, {

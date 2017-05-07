@@ -62,6 +62,27 @@ describe('Lambda handler', () => {
   });
 
   it('should return 400 when the payload is invalid', () => {
+  it('should not run the payload validation on GET request', () => {
+    const method = sandbox.stub().returns(Promise.resolve({ Items: {} }));
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(false);
+    sandbox.stub(responseTransform, 'transform').returns({});
+    return handler.execute(method, { httpMethod: 'GET' }, undefined, callback).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 204);
+      assert.equal(isValidRequest.validate.callCount, 0);
+    });
+  });
+
+  it('should run the payload validation on other http requests', () => {
+    const method = sandbox.stub().returns(Promise.resolve());
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+    return handler.execute(method, { httpMethod: 'ANY' }, undefined, callback).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 204);
+      assert.equal(isValidRequest.validate.callCount, 1);
+    });
+  });
+
     const method = sandbox.stub();
     const callback = sandbox.stub();
     sandbox.stub(isValidRequest, 'validate').returns(false);
