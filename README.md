@@ -34,7 +34,7 @@ The idea for the initial basic schema will be following:
  - [x] Update the body element check to verify it is not empty - Mark as done as tests pass
  - [x] Add eslint
  - [ ] Work out if should use 204 with no body or should respond with some sort of JSON response on successful calls
- - [ ] Add a generic handler to be make code more DRY
+ - [x] Add a generic handler to be make code more DRY
  - [ ] Add integration tests
  - [x] Refactor the code to move all the DynamoDB operations to its own "db/storage" module
  - [ ] Add authentication mechanism for adding/removing/deleting features
