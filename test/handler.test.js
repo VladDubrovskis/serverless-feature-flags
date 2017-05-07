@@ -1,6 +1,7 @@
 const assert = require('assert');
 const handler = require('../src/lib/handler.js');
 const isValidRequest = require('../src/lib/is-valid-request');
+const responseTransform = require('../src/lib/response-transform');
 const sinon = require('sinon');
 
 let sandbox;
@@ -94,6 +95,27 @@ describe('Lambda handler', () => {
           message: 'Invalid request',
         },
       });
+    });
+  });
+
+  it('should run the response transform on the GET request', () => {
+    const method = sandbox.stub().returns(Promise.resolve({ Items: {} }));
+    const callback = sandbox.stub();
+    sandbox.stub(responseTransform, 'transform').returns({});
+    return handler.execute(method, { httpMethod: 'GET' }, undefined, callback, 200).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 200);
+      assert.equal(responseTransform.transform.callCount, 1);
+    });
+  });
+
+  it('should not run the response transform on the non-GET requests', () => {
+    const method = sandbox.stub().returns(Promise.resolve());
+    const callback = sandbox.stub();
+    sandbox.stub(isValidRequest, 'validate').returns(true);
+    sandbox.stub(responseTransform, 'transform').returns({});
+    return handler.execute(method, { httpMethod: 'ANY' }, undefined, callback, 200).then(() => {
+      assert.equal(callback.firstCall.args[1].statusCode, 200);
+      assert.equal(responseTransform.transform.callCount, 0);
     });
   });
 });

@@ -1,9 +1,9 @@
 const isValidRequest = require('../lib/is-valid-request');
+const responseTransform = require('../lib/response-transform');
 
 module.exports = {
   execute: (method, event, context, callback, statusCode = 204, errorCodeMapping = {}) => {
     let responseStatusCode = statusCode;
-    const payload = isValidRequest.validate(event.body);
     const httpMethod = event.httpMethod;
     const payload = httpMethod !== 'GET' ? isValidRequest.validate(event.body) : '';
     if (payload === false) {
@@ -23,8 +23,16 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       method(payload)
-        .then(() => {
-          callback(null, { statusCode });
+        .then((responseData) => {
+          const response = {
+            statusCode,
+          };
+
+          if (httpMethod === 'GET') {
+            response.body = JSON.stringify(responseTransform.transform(responseData.Items));
+          }
+
+          callback(null, response);
           resolve();
         })
         .catch((err) => {
