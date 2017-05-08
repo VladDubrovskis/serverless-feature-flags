@@ -1,9 +1,10 @@
 const aws = require('aws-sdk');
+const dynamoTableName = 'featureFlags';
 
 module.exports = {
   get: () => {
     const params = {
-      TableName: 'featureFlags',
+      TableName: dynamoTableName,
     };
 
     const docClient = new aws.DynamoDB.DocumentClient();
@@ -11,7 +12,7 @@ module.exports = {
   },
   put: ({ featureName, state }) => {
     const newItemParams = {
-      TableName: 'featureFlags',
+      TableName: dynamoTableName,
       Item: {
         featureName,
         state,
@@ -29,7 +30,7 @@ module.exports = {
   },
   update: ({ featureName, state }) => {
     const updateItemParams = {
-      TableName: 'featureFlags',
+      TableName: dynamoTableName,
       Key: {
         featureName,
       },
@@ -52,7 +53,7 @@ module.exports = {
   },
   delete: ({ featureName }) => {
     const itemParams = {
-      TableName: 'featureFlags',
+      TableName: dynamoTableName,
       Key: {
         featureName,
       },
