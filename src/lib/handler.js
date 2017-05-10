@@ -2,22 +2,21 @@ const isValidRequest = require('../lib/is-valid-request');
 const responseTransform = require('../lib/response-transform');
 
 module.exports = {
-  execute: (method, event, context, callback, statusCode = 204, errorCodeMapping = {}) => {
+  execute: (method, event, context, statusCode = 204, errorCodeMapping = {}) => {
     let responseStatusCode = statusCode;
     const httpMethod = event.httpMethod;
     const payload = httpMethod !== 'GET' ? isValidRequest.validate(event.body) : '';
     if (payload === false) {
       return new Promise((resolve, reject) => {
-        callback(null, {
-          statusCode: 400,
-          body: {
-            error: {
-              code: 400,
-              message: 'Invalid request',
+        reject({
+            statusCode: 400,
+            body: {
+                error: {
+                    code: 400,
+                    message: 'Invalid request',
+                },
             },
-          },
         });
-        reject('Invalid request');
       });
     }
 
@@ -31,9 +30,7 @@ module.exports = {
           if (httpMethod === 'GET') {
             response.body = JSON.stringify(responseTransform.transform(responseData.Items));
           }
-
-          callback(null, response);
-          resolve();
+          resolve(response);
         })
         .catch((err) => {
           responseStatusCode = 500;
@@ -41,17 +38,15 @@ module.exports = {
             responseStatusCode = errorCodeMapping[err.statusCode] || 500;
           }
 
-          callback(null,
-            {
+          reject({
               statusCode: responseStatusCode,
               body: JSON.stringify({
-                error: {
-                  code: responseStatusCode,
-                  message: err,
-                },
+                  error: {
+                      code: responseStatusCode,
+                      message: err,
+                  },
               }),
-            });
-          reject(err);
+          });
         });
     });
   },
