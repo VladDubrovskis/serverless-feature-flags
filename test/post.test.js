@@ -21,7 +21,19 @@ describe('Feature flags POST endpoint', () => {
     const context = { context: 1 };
     const event = {};
     return post.handler(event, context, callback).then(() => {
-      assert(handlerStub.calledWith(storage.put, event, context, callback), true);
+      assert(handlerStub.calledWith(storage.put, event, context), true);
+      assert.equal(callback.callCount, 1);
     });
+  });
+
+  it('should invoke callback then the handler rejects', () => {
+      const callback = sandbox.stub();
+      const handlerStub = sandbox.stub(handler, 'execute').returns(Promise.reject());
+      const context = { context: 1 };
+      const event = {};
+      return post.handler(event, context, callback).catch(() => {
+          assert(handlerStub.calledWith(storage.put, event, context), true);
+          assert.equal(callback.callCount, 1);
+      });
   });
 });
