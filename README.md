@@ -23,7 +23,7 @@ The idea for the initial basic schema will be following:
  - [x] POST handler - add check to see if a flag is already in the table, if so, throw error. Otherwise it would get overwritten
   - [x] Make use of AWS-SDK [promises](https://aws.amazon.com/blogs/developer/support-for-promises-in-the-sdk/) rather than callbacks
   - [x] Fix failing unit test
- - [ ] Refactor the callbacks - repeated code all over the place
+ - [x] Refactor the callbacks - repeated code all over the place
  - [x] Update the response HTTP error codes
  - [x] Add PUT handler - to update flag in DynamoDB
  - [x] Refactor the method that checks if returned value is empty plain object - either move to own module to make DRY or use lodash?
