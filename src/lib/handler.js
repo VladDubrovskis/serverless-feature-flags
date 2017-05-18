@@ -33,10 +33,7 @@ module.exports = {
           resolve(response);
         })
         .catch((err) => {
-          responseStatusCode = 500;
-          if (err && err.statusCode) {
-            responseStatusCode = errorCodeMapping[err.statusCode] || 500;
-          }
+          responseStatusCode = (err && err.statusCode) ? errorCodeMapping[err.statusCode] : 500;
 
           reject({
               statusCode: responseStatusCode,
