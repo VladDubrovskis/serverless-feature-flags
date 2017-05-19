@@ -1,4 +1,3 @@
-const assert = require('assert');
 const responseTransform = require('../src/lib/response-transform');
 
 describe('Response transform', () => {
@@ -21,6 +20,6 @@ describe('Response transform', () => {
       test: false,
     };
 
-    assert.deepEqual(actual, expected);
+    expect(actual).toEqual(expected);
   });
 });
