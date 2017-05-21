@@ -1,39 +1,25 @@
-const assert = require('assert');
-const post = require('../src/api/post.js');
-const sinon = require('sinon');
+jest.mock('../src/lib/handler');
+jest.mock('../src/lib/storage');
 const handler = require('../src/lib/handler');
 const storage = require('../src/lib/storage');
-
-let sandbox;
+const post = require('../src/api/post.js');
 
 describe('Feature flags POST endpoint', () => {
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-  });
 
-  afterEach(() => {
-    sandbox.restore();
-  });
-
-  it('should use generic handler and pass the storage.put as method', () => {
-    const callback = sandbox.stub();
-    const handlerStub = sandbox.stub(handler, 'execute').returns(Promise.resolve());
-    const context = { context: 1 };
-    const event = {};
-    return post.handler(event, context, callback).then(() => {
-      assert(handlerStub.calledWith(storage.put, event, context), true);
-      assert.equal(callback.callCount, 1);
+    afterEach(() => {
+        jest.clearAllMocks();
     });
-  });
 
-  it('should invoke callback then the handler rejects', () => {
-      const callback = sandbox.stub();
-      const handlerStub = sandbox.stub(handler, 'execute').returns(Promise.reject());
-      const context = { context: 1 };
-      const event = {};
-      return post.handler(event, context, callback).catch(() => {
-          assert(handlerStub.calledWith(storage.put, event, context), true);
-          assert.equal(callback.callCount, 1);
-      });
-  });
+    it('should use generic handler and pass the storage.put as method', () => {
+        const callback = jest.fn();
+        handler.execute.mockReturnValue(Promise.resolve('test'));
+        const context = { context: 1 };
+        const event = {};
+        return post.handler(event, context, callback).then(() => {
+            expect(handler.execute).toHaveBeenCalledWith(storage.put, event, context, expect.any(Number), expect.any(Object));
+            expect(callback).toHaveBeenCalledTimes(1);
+            expect(callback).toHaveBeenCalledWith(null, 'test');
+        });
+    });
+
 });
