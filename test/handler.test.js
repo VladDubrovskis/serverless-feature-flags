@@ -1,59 +1,55 @@
-const assert = require('assert');
-const handler = require('../src/lib/handler.js');
+jest.mock('../src/lib/is-valid-request');
+jest.mock('../src/lib/response-transform');
+
 const isValidRequest = require('../src/lib/is-valid-request');
 const responseTransform = require('../src/lib/response-transform');
-const sinon = require('sinon');
-
-let sandbox;
+const handler = require('../src/lib/handler.js');
 
 describe('Lambda handler', () => {
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-  });
 
   afterEach(() => {
-    sandbox.restore();
+    jest.clearAllMocks();
   });
 
   it('should resolve with a 204 on successful call by default if no success status code has been passed', () => {
-    const method = sandbox.stub().returns(Promise.resolve());
+    const method = jest.fn().mockReturnValue(Promise.resolve());
     const payload = { featureName: 1, state: 2 };
-    sandbox.stub(isValidRequest, 'validate').returns(payload);
+    isValidRequest.validate.mockReturnValue(payload);
     return handler.execute(method, payload, undefined, 204).then((result) => {
-      assert.equal(result.statusCode, 204);
-      assert.equal(method.calledWith(payload), true);
+      expect(result.statusCode).toEqual(204);
+      expect(method).toHaveBeenCalledWith(payload);
     });
   });
 
   it('should resolve with a 203 on successful call', () => {
-    const method = sandbox.stub().returns(Promise.resolve());
-    sandbox.stub(isValidRequest, 'validate').returns(true);
+    const method = jest.fn().mockReturnValue(Promise.resolve());
+    isValidRequest.validate.mockReturnValue(true);
     return handler.execute(method, {}, undefined, 203).then((result) => {
-      assert.equal(result.statusCode, 203);
+      expect(result.statusCode).toEqual(203);
     });
   });
 
   it('should resolve with any code passed on successful call', () => {
-    const method = sandbox.stub().returns(Promise.resolve());
-    sandbox.stub(isValidRequest, 'validate').returns(true);
+    const method = jest.fn().mockReturnValue(Promise.resolve());
+    isValidRequest.validate.mockReturnValue(true);
     return handler.execute(method, {}, undefined, 301).then((result) => {
-      assert.equal(result.statusCode, 301);
+      expect(result.statusCode).toEqual(301);
     });
   });
 
   it('should resolve with a 500 on failed call', () => {
-    const method = sandbox.stub().returns(Promise.reject());
-    sandbox.stub(isValidRequest, 'validate').returns(true);
+    const method = jest.fn().mockReturnValue(Promise.reject());
+    isValidRequest.validate.mockReturnValue(true);
     return handler.execute(method, {}).catch((error) => {
-      assert.equal(error.statusCode, 500);
+      expect(error.statusCode).toEqual(500);
     });
   });
 
   it('should support error response mapping. e.g. 400 to 404', () => {
-    const method = sandbox.stub().returns(Promise.reject({ statusCode: 400 }));
-    sandbox.stub(isValidRequest, 'validate').returns(true);
+    const method = jest.fn().mockReturnValue(Promise.reject({ statusCode: 400 }));
+    isValidRequest.validate.mockReturnValue(true);
     return handler.execute(method, {}, undefined, 204, { 400: 404 }).catch((error) => {
-      assert.equal(error.statusCode, 404);
+      expect(error.statusCode).toEqual(404);
     });
   });
 
