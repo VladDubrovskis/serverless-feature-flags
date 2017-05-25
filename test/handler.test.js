@@ -54,30 +54,31 @@ describe('Lambda handler', () => {
   });
 
   it('should not run the payload validation on GET request', () => {
-    const method = sandbox.stub().returns(Promise.resolve({ Items: {} }));
-    sandbox.stub(isValidRequest, 'validate').returns(false);
-    sandbox.stub(responseTransform, 'transform').returns({});
+    const method = jest.fn().mockReturnValue(Promise.resolve({ Items: {} }));
+    isValidRequest.validate.mockReturnValue(false);
+    responseTransform.transform.mockReturnValue({});
     return handler.execute(method, { httpMethod: 'GET' }).then((result) => {
-      assert.equal(result.statusCode, 204);
-      assert.equal(isValidRequest.validate.callCount, 0);
+      expect(result.statusCode).toEqual(204);
+      expect(isValidRequest.validate).toHaveBeenCalledTimes(0);
     });
   });
 
   it('should run the payload validation on other http requests', () => {
-    const method = sandbox.stub().returns(Promise.resolve());
-    sandbox.stub(isValidRequest, 'validate').returns(true);
+    const method = jest.fn().mockReturnValue(Promise.resolve());
+    isValidRequest.validate.mockReturnValue(true);
     return handler.execute(method, { httpMethod: 'ANY' }).then((result) => {
-      assert.equal(result.statusCode, 204);
-      assert.equal(isValidRequest.validate.callCount, 1);
+      expect(result.statusCode).toEqual(204);
+      expect(isValidRequest.validate).toHaveBeenCalledTimes(1);
     });
   });
 
   it('should return 400 when the payload is invalid on other requests', () => {
-    const method = sandbox.stub();
-    sandbox.stub(isValidRequest, 'validate').returns(false);
+    const method = jest.fn();
+    isValidRequest.validate.mockReturnValue(false);
     return handler.execute(method, {}).catch((error) => {
-      assert.equal(error.statusCode, 400);
-      assert.deepEqual(error.body, {
+      expect(error.statusCode).toEqual(400);
+      expect(method).toHaveBeenCalledTimes(0);
+      expect(error.body).toEqual({
         error: {
           code: 400,
           message: 'Invalid request',
@@ -87,21 +88,22 @@ describe('Lambda handler', () => {
   });
 
   it('should run the response transform on the GET request', () => {
-    const method = sandbox.stub().returns(Promise.resolve({ Items: {} }));
-    sandbox.stub(responseTransform, 'transform').returns({});
+    const method = jest.fn().mockReturnValue(Promise.resolve({ Items: {} }));
+    isValidRequest.validate.mockReturnValue(true);
+    responseTransform.transform.mockReturnValue({});
     return handler.execute(method, { httpMethod: 'GET' }, undefined, 200).then((result) => {
-      assert.equal(result.statusCode, 200);
-      assert.equal(responseTransform.transform.callCount, 1);
+      expect(result.statusCode).toEqual(200);
+      expect(responseTransform.transform).toHaveBeenCalledTimes(1);
     });
   });
 
   it('should not run the response transform on the non-GET requests', () => {
-    const method = sandbox.stub().returns(Promise.resolve());
-    sandbox.stub(isValidRequest, 'validate').returns(true);
-    sandbox.stub(responseTransform, 'transform').returns({});
+    const method = jest.fn().mockReturnValue(Promise.resolve());
+    isValidRequest.validate.mockReturnValue(true);
+    responseTransform.transform.mockReturnValue({});
     return handler.execute(method, { httpMethod: 'ANY' }, undefined, 200).then((result) => {
-      assert.equal(result.statusCode, 200);
-      assert.equal(responseTransform.transform.callCount, 0);
+      expect(result.statusCode).toEqual(200);
+      expect(responseTransform.transform).toHaveBeenCalledTimes(0);
     });
   });
 });
