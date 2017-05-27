@@ -5,7 +5,7 @@ module.exports = {
   execute: (method, event, context, statusCode = 204, errorCodeMapping = {}) => {
     let responseStatusCode = statusCode;
     const httpMethod = event.httpMethod;
-    const payload = httpMethod !== 'GET' ? isValidRequest.validate(event.body) : '';
+    const payload = httpMethod !== 'GET' ? isValidRequest(event.body) : '';
     if (payload === false) {
       return new Promise((resolve, reject) => {
         reject({
