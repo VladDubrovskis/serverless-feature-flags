@@ -13,7 +13,7 @@ describe('Response transform', () => {
       },
     ];
 
-    const actual = responseTransform.transform(payload);
+    const actual = responseTransform(payload);
 
     const expected = {
       test2: true,

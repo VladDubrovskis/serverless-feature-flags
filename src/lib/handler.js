@@ -28,7 +28,7 @@ module.exports = {
           };
 
           if (httpMethod === 'GET') {
-            response.body = JSON.stringify(responseTransform.transform(responseData.Items));
+            response.body = JSON.stringify(responseTransform(responseData.Items));
           }
           resolve(response);
         })

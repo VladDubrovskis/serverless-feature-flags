@@ -56,7 +56,7 @@ describe('Lambda handler', () => {
   it('should not run the payload validation on GET request', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve({ Items: {} }));
     isValidRequest.mockReturnValue(false);
-    responseTransform.transform.mockReturnValue({});
+    responseTransform.mockReturnValue({});
     return handler.execute(method, { httpMethod: 'GET' }).then((result) => {
       expect(result.statusCode).toEqual(204);
       expect(isValidRequest).toHaveBeenCalledTimes(0);
@@ -90,20 +90,20 @@ describe('Lambda handler', () => {
   it('should run the response transform on the GET request', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve({ Items: {} }));
     isValidRequest.mockReturnValue(true);
-    responseTransform.transform.mockReturnValue({});
+    responseTransform.mockReturnValue({});
     return handler.execute(method, { httpMethod: 'GET' }, undefined, 200).then((result) => {
       expect(result.statusCode).toEqual(200);
-      expect(responseTransform.transform).toHaveBeenCalledTimes(1);
+      expect(responseTransform).toHaveBeenCalledTimes(1);
     });
   });
 
   it('should not run the response transform on the non-GET requests', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve());
     isValidRequest.mockReturnValue(true);
-    responseTransform.transform.mockReturnValue({});
+    responseTransform.mockReturnValue({});
     return handler.execute(method, { httpMethod: 'ANY' }, undefined, 200).then((result) => {
       expect(result.statusCode).toEqual(200);
-      expect(responseTransform.transform).toHaveBeenCalledTimes(0);
+      expect(responseTransform).toHaveBeenCalledTimes(0);
     });
   });
 });
