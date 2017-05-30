@@ -6,7 +6,6 @@ const responseTransform = require('../src/lib/response-transform');
 const handler = require('../src/lib/handler.js');
 
 describe('Lambda handler', () => {
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -15,7 +14,7 @@ describe('Lambda handler', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve());
     const payload = { featureName: 1, state: 2 };
     isValidRequest.mockReturnValue(payload);
-    return handler.execute(method, payload, undefined, 204).then((result) => {
+    return handler(method, payload, undefined, 204).then((result) => {
       expect(result.statusCode).toEqual(204);
       expect(method).toHaveBeenCalledWith(payload);
     });
@@ -24,7 +23,7 @@ describe('Lambda handler', () => {
   it('should resolve with a 203 on successful call', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve());
     isValidRequest.mockReturnValue(true);
-    return handler.execute(method, {}, undefined, 203).then((result) => {
+    return handler(method, {}, undefined, 203).then((result) => {
       expect(result.statusCode).toEqual(203);
     });
   });
@@ -32,7 +31,7 @@ describe('Lambda handler', () => {
   it('should resolve with any code passed on successful call', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve());
     isValidRequest.mockReturnValue(true);
-    return handler.execute(method, {}, undefined, 301).then((result) => {
+    return handler(method, {}, undefined, 301).then((result) => {
       expect(result.statusCode).toEqual(301);
     });
   });
@@ -40,7 +39,7 @@ describe('Lambda handler', () => {
   it('should resolve with a 500 on failed call', () => {
     const method = jest.fn().mockReturnValue(Promise.reject());
     isValidRequest.mockReturnValue(true);
-    return handler.execute(method, {}).catch((error) => {
+    return handler(method, {}).catch((error) => {
       expect(error.statusCode).toEqual(500);
     });
   });
@@ -48,7 +47,7 @@ describe('Lambda handler', () => {
   it('should support error response mapping. e.g. 400 to 404', () => {
     const method = jest.fn().mockReturnValue(Promise.reject({ statusCode: 400 }));
     isValidRequest.mockReturnValue(true);
-    return handler.execute(method, {}, undefined, 204, { 400: 404 }).catch((error) => {
+    return handler(method, {}, undefined, 204, { 400: 404 }).catch((error) => {
       expect(error.statusCode).toEqual(404);
     });
   });
@@ -57,7 +56,7 @@ describe('Lambda handler', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve({ Items: {} }));
     isValidRequest.mockReturnValue(false);
     responseTransform.mockReturnValue({});
-    return handler.execute(method, { httpMethod: 'GET' }).then((result) => {
+    return handler(method, { httpMethod: 'GET' }).then((result) => {
       expect(result.statusCode).toEqual(204);
       expect(isValidRequest).toHaveBeenCalledTimes(0);
     });
@@ -66,7 +65,7 @@ describe('Lambda handler', () => {
   it('should run the payload validation on other http requests', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve());
     isValidRequest.mockReturnValue(true);
-    return handler.execute(method, { httpMethod: 'ANY' }).then((result) => {
+    return handler(method, { httpMethod: 'ANY' }).then((result) => {
       expect(result.statusCode).toEqual(204);
       expect(isValidRequest).toHaveBeenCalledTimes(1);
     });
@@ -75,7 +74,7 @@ describe('Lambda handler', () => {
   it('should return 400 when the payload is invalid on other requests', () => {
     const method = jest.fn();
     isValidRequest.mockReturnValue(false);
-    return handler.execute(method, {}).catch((error) => {
+    return handler(method, {}).catch((error) => {
       expect(error.statusCode).toEqual(400);
       expect(method).toHaveBeenCalledTimes(0);
       expect(error.body).toEqual({
@@ -91,7 +90,7 @@ describe('Lambda handler', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve({ Items: {} }));
     isValidRequest.mockReturnValue(true);
     responseTransform.mockReturnValue({});
-    return handler.execute(method, { httpMethod: 'GET' }, undefined, 200).then((result) => {
+    return handler(method, { httpMethod: 'GET' }, undefined, 200).then((result) => {
       expect(result.statusCode).toEqual(200);
       expect(responseTransform).toHaveBeenCalledTimes(1);
     });
@@ -101,7 +100,7 @@ describe('Lambda handler', () => {
     const method = jest.fn().mockReturnValue(Promise.resolve());
     isValidRequest.mockReturnValue(true);
     responseTransform.mockReturnValue({});
-    return handler.execute(method, { httpMethod: 'ANY' }, undefined, 200).then((result) => {
+    return handler(method, { httpMethod: 'ANY' }, undefined, 200).then((result) => {
       expect(result.statusCode).toEqual(200);
       expect(responseTransform).toHaveBeenCalledTimes(0);
     });
