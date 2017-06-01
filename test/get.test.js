@@ -5,21 +5,24 @@ const storage = require('../src/lib/storage');
 const get = require('../src/api/get.js');
 
 describe('Feature flags GET endpoint', () => {
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should use generic handler and pass the storage.get as method', () => {
     const callback = jest.fn();
-    handler.execute.mockReturnValue(Promise.resolve('test'));
+    handler.mockReturnValue(Promise.resolve('test'));
     const context = { context: 1 };
     const event = {};
     return get.handler(event, context, callback).then(() => {
-      expect(handler.execute).toHaveBeenCalledWith(storage.get, event, context, expect.any(Number));
+      expect(handler)
+          .toHaveBeenCalledWith(
+              storage.get,
+              event, context,
+              expect.any(Number),
+          );
       expect(callback).toHaveBeenCalledTimes(1);
       expect(callback).toHaveBeenCalledWith(null, 'test');
     });
   });
-
 });
