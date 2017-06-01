@@ -1,4 +1,5 @@
 const aws = require('aws-sdk');
+
 const dynamoTableName = 'featureFlags';
 
 module.exports = {
